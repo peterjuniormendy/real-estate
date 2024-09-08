@@ -37,13 +37,16 @@ export const signin = async (req, res, next) => {
 
     // authenticate user
     const token = jwt.sign({ id: user._id }, process.env.MY_SECRET);
+    // reture everything in user except password
+    const { password: pass, ...rest } = user._doc;
+
     res
       .cookie("access_token", token, {
         httpOnly: true,
         maxAge: 1000 * 60 * 60 * 24 * 7,
       })
       .status(200)
-      .json({ data: user, message: "User signin successfully" });
+      .json({ data: rest, message: "User signin successfully" });
   } catch (error) {
     next(error);
   }
