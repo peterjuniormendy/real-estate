@@ -6,8 +6,9 @@ import { errorHandler } from "../utils/error.js";
 export const signup = async (req, res, next) => {
   const { username, email, password } = req.body;
 
-  const existingUser = await User.findOne({ email });
-  if (existingUser) {
+  const userExists = await User.findOne({ email });
+
+  if (userExists) {
     return res.status(400).json({ message: "Email already in use" });
   }
 
@@ -29,6 +30,7 @@ export const signin = async (req, res, next) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
+
     if (!user) return next(errorHandler(404, "User not found"));
 
     // compare password
@@ -37,6 +39,7 @@ export const signin = async (req, res, next) => {
 
     // authenticate user
     const token = jwt.sign({ id: user._id }, process.env.MY_SECRET);
+
     // reture everything in user except password
     const { password: pass, ...rest } = user._doc;
 
