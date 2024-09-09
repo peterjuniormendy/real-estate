@@ -49,7 +49,7 @@ export const signin = async (req, res, next) => {
         maxAge: 1000 * 60 * 60 * 24 * 7,
       })
       .status(200)
-      .json({ data: rest, message: "User signin successfully" });
+      .json({ success: true, data: rest, message: "User signin successfully" });
   } catch (error) {
     next(error);
   }

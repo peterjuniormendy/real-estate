@@ -1,5 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
+import cors from "cors";
 import dotenv from "dotenv";
 dotenv.config();
 import userRouter from "../server/routes/userRoutes.js";
@@ -11,6 +12,7 @@ const app = express();
 // MIDDLEWARES
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cors());
 
 // AUTH ROUTES
 app.use("/api/auth", authRouter);

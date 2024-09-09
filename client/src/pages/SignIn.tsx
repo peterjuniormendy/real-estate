@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { signinUser } from "../controllers/userController";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 
 interface FormData {
   email: string;
@@ -7,12 +9,14 @@ interface FormData {
 }
 
 const SignIn = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
+  const { error, loading } = useAppSelector((state) => state.user);
+
   const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
   });
-  const [error, setError] = useState<string>("");
+
   const navigate = useNavigate();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -21,25 +25,19 @@ const SignIn = () => {
     });
   };
 
+  const validateForm = (data: FormData) => {
+    const { email, password } = data;
+    if (!email || !password) {
+      return "Please fill in all fields";
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsLoading(true);
-    if (formData.email === "") {
-      return setError("Email is required");
-    }
-    if (formData.password === "") {
-      return setError("Password is required");
-    }
+    validateForm(formData);
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-      const data = await res.json();
-      if (data.message === "User signin successfully") {
+      const { success } = await signinUser(formData, dispatch);
+      if (success) {
         navigate("/profile");
         // reset form data
         setFormData({
@@ -47,22 +45,10 @@ const SignIn = () => {
           password: "",
         });
       }
-      setError(data.message);
-      setIsLoading(false);
     } catch (error) {
-      setError("An error occurred during sign-in.");
-    } finally {
-      setIsLoading(false);
+      console.log(error);
     }
   };
-
-  useEffect(() => {
-    if (error) {
-      setTimeout(() => {
-        setError("");
-      }, 3000);
-    }
-  }, [error]);
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl text-center font-semibold my-7">Sign In</h1>
@@ -77,6 +63,7 @@ const SignIn = () => {
         )}
 
         <input
+          id="email"
           type="text"
           name="email"
           placeholder="email"
@@ -84,6 +71,7 @@ const SignIn = () => {
           onChange={handleChange}
         />
         <input
+          id="password"
           type="password"
           name="password"
           placeholder="password"
@@ -92,10 +80,10 @@ const SignIn = () => {
         />
         <button
           type="submit"
-          disabled={isLoading}
+          disabled={loading}
           className="w-full bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
         >
-          {isLoading ? "Submitting..." : "Sign in"}
+          {loading ? "Submitting..." : "Sign in"}
         </button>
       </form>
       <div className="flex gap-2 mt-5">
