@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import Oauth from "../components/Oauth";
 import { signinUser } from "../controllers/userController";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 
@@ -85,6 +86,7 @@ const SignIn = () => {
         >
           {loading ? "Submitting..." : "Sign in"}
         </button>
+        <Oauth />
       </form>
       <div className="flex gap-2 mt-5">
         <p>Don't have an account?</p>
