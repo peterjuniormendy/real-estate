@@ -1,20 +1,66 @@
 import { useEffect, useRef, useState } from "react";
 import { Navigate } from "react-router-dom";
-import getStorage from "redux-persist/es/storage/getStorage";
 import { useAppSelector } from "../redux/hooks";
-
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
+import { app } from "../firebase";
 const Profile = () => {
+  const profileRef = useRef(null);
   const { user } = useAppSelector((state) => state.user);
   const [file, setFile] = useState<File | undefined>(undefined);
-  console.log("profile", file);
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
+  const [uploadError, setUploadError] = useState<any>(null);
 
-  const profileRef = useRef(null);
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    avatar: "",
+    password: "",
+  });
 
-  useEffect(() => {}, [file]);
+  useEffect(() => {
+    if (file) {
+      handleFileUpload(file);
+    }
+  }, [file]);
 
-  const handleFileUpload = (file) => {
-    console.log(file);
+  const handleFileUpload = (file: File) => {
+    const storage = getStorage(app);
+    const fileName = new Date().getTime() + file.name;
+    const storageRef = ref(storage, fileName);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setUploadProgress(Math.round(progress));
+      },
+      (error) => {
+        setUploadError(error || "error occure while uploading image");
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          setFormData((prev) => ({ ...prev, avatar: downloadURL }));
+        });
+      }
+    );
   };
+
+  const feedback = uploadError ? (
+    <span className="text-red-600">{uploadError}</span>
+  ) : uploadProgress > 0 && uploadProgress < 100 ? (
+    <span className="text-slate-700">{`Uploading ${uploadProgress}%`}</span>
+  ) : uploadProgress === 100 ? (
+    <span className="text-green-700">Image successfully uploaded</span>
+  ) : (
+    ""
+  );
 
   if (!user) {
     return <Navigate to={"/login"} />;
@@ -33,10 +79,11 @@ const Profile = () => {
         />
         <img
           onClick={() => profileRef.current.click()}
-          src={user?.avatar}
+          src={formData.avatar || user?.avatar}
           alt="profile"
           className="rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2"
         />
+        <p className="text-center">{feedback}</p>
         <input
           type="text"
           placeholder="username"
