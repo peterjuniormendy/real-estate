@@ -53,10 +53,9 @@ export const signin = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-  User.findOne({ email });
 };
 
-export const google = async (req, res, nest) => {
+export const google = async (req, res, next) => {
   try {
     const user = await User.findOne({ email: req.body.email });
 
@@ -104,5 +103,7 @@ export const google = async (req, res, nest) => {
           message: "User signin successfully",
         });
     }
-  } catch (error) {}
+  } catch (error) {
+    next(error);
+  }
 };
