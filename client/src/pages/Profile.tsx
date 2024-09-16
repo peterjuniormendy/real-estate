@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { useAppSelector } from "../redux/hooks";
+import { useAppSelector, useAppDispatch } from "../redux/hooks";
 import {
   getDownloadURL,
   getStorage,
@@ -8,19 +8,33 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../firebase";
+import { updateUser } from "../controllers/userController";
+
 const Profile = () => {
+  const dispatch = useAppDispatch();
   const profileRef = useRef(null);
-  const { user } = useAppSelector((state) => state.user);
+  const { user, loading, error } = useAppSelector((state) => state.user);
   const [file, setFile] = useState<File | undefined>(undefined);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [uploadError, setUploadError] = useState<any>(null);
 
   const [formData, setFormData] = useState({
+    id: "",
     username: "",
     email: "",
     avatar: "",
     password: "",
   });
+
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      id: user?._id,
+      email: user?.email,
+      username: user?.username,
+      avatar: user?.avatar,
+    }));
+  }, [user]);
 
   useEffect(() => {
     if (file) {
@@ -62,6 +76,20 @@ const Profile = () => {
     ""
   );
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await updateUser(formData, dispatch);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   if (!user) {
     return <Navigate to={"/login"} />;
   }
@@ -69,13 +97,19 @@ const Profile = () => {
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
-      <form className="flex flex-col space-y-4">
+      <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
+        {error && (
+          <div className="w-full bg-red-200 text-red-400 py-2 text-center">
+            <p>{error}</p>
+          </div>
+        )}
         <input
           onChange={(e) => setFile(e.target.files?.[0])}
           type="file"
           ref={profileRef}
           hidden
           accept="image/*"
+          name="avatar"
         />
         <img
           onClick={() => profileRef.current.click()}
@@ -88,25 +122,32 @@ const Profile = () => {
           type="text"
           placeholder="username"
           className="border p-3 rounded-lg"
-          id="username"
-          value={user?.username}
+          onChange={(e) => handleInputChange(e)}
+          name="username"
+          value={formData?.username}
         />
         <input
           disabled
           type="text"
           placeholder="email"
           className="border bg-slate-100 p-3 rounded-lg"
-          id="email"
-          value={user?.email}
+          name="email"
+          value={formData?.email}
         />
         <input
-          type="text"
+          type="password"
           placeholder="password"
           className="border p-3 rounded-lg"
-          id="password"
+          onChange={(e) => handleInputChange(e)}
+          name="password"
+          value={formData?.password}
         />
-        <button className="bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80">
-          Update
+        <button
+          // disabled={loading}
+          type="submit"
+          className="bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80"
+        >
+          {loading ? "Updating..." : "Update"}
         </button>
       </form>
       <div className="flex justify-between mt-5">

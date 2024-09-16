@@ -1,20 +1,38 @@
-import { loginUser } from "../httpCommon";
+import { loginUser, registerUser, userUpdate } from "../httpCommon";
 import {
   signInFailure,
   signInStart,
   signInSuccess,
+  updateUserFailure,
+  updateUserStart,
+  updateUserSuccess,
   //   signOut,
 } from "../redux/slice/userSlice.js";
 
-interface FormData {
+interface signInData {
   email: string;
   password: string;
 }
+
+interface signUpData {
+  email: string;
+  password: string;
+  username: string;
+}
+
+interface updateData {
+  id: string;
+  email: string;
+  password: string;
+  username: string;
+  avatar: string;
+}
+
 interface Dispatch {
   (action: any): void;
 }
 
-export const signinUser = async (formData: FormData, dispatch: Dispatch) => {
+export const signinUser = async (formData: signInData, dispatch: Dispatch) => {
   try {
     dispatch(signInStart());
     const { data } = await loginUser(formData);
@@ -24,6 +42,37 @@ export const signinUser = async (formData: FormData, dispatch: Dispatch) => {
     console.error(error);
     dispatch(
       signInFailure(
+        error?.response?.data?.message || "Error occured while signing in"
+      )
+    );
+    return error?.response?.data;
+  }
+};
+
+export const signupUser = async (formData: signUpData) => {
+  try {
+    const { data } = await registerUser(formData);
+    return data;
+  } catch (error: object | any) {
+    console.error(error);
+    return error?.response?.data;
+  }
+};
+
+export const updateUser = async (formData: updateData, dispatch: Dispatch) => {
+  try {
+    dispatch(updateUserStart());
+    const data = await userUpdate(formData);
+
+    if (!data?.success) {
+      dispatch(updateUserFailure(data?.message));
+      return;
+    }
+    dispatch(updateUserSuccess(data));
+  } catch (error: object | any) {
+    console.error(error);
+    dispatch(
+      updateUserFailure(
         error?.response?.data?.message || "Error occured while signing in"
       )
     );

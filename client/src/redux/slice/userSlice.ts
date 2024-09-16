@@ -37,11 +37,30 @@ export const userSlice = createSlice({
       state.loading = false;
       state.error = null;
     },
+    updateUserStart: (state) => {
+      state.loading = true;
+    },
+    updateUserSuccess: (state, action: PayloadAction<object>) => {
+      state.user = action.payload;
+      state.loading = false;
+      state.error = null;
+    },
+    updateUserFailure: (state, action: PayloadAction<string>) => {
+      state.error = action.payload;
+      state.loading = false;
+    },
   },
 });
 
-export const { signInStart, signInSuccess, signInFailure, signOut } =
-  userSlice.actions;
+export const {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+  signOut,
+  updateUserStart,
+  updateUserSuccess,
+  updateUserFailure,
+} = userSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 export const getUser = (state: RootState) => state.user;

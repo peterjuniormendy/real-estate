@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Oauth from "../components/Oauth";
+import { signupUser } from "../controllers/userController";
 
 interface FormData {
   username: string;
@@ -37,15 +38,11 @@ const SignUp = () => {
       return setError("Password is required");
     }
     try {
-      const res = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const res = await signupUser(formData);
+      console.log("res", res);
       const data = await res.json();
-      if (data.message === "User register successfully.") {
+      console.log("data", res);
+      if (res?.message === "User register successfully.") {
         navigate("/login");
         // reset form data
         setFormData({
