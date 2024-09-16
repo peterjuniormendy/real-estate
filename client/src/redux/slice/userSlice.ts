@@ -32,11 +32,7 @@ export const userSlice = createSlice({
       state.error = action.payload;
       state.loading = false;
     },
-    signOut: (state) => {
-      state.user = null;
-      state.loading = false;
-      state.error = null;
-    },
+
     updateUserStart: (state) => {
       state.loading = true;
     },
@@ -49,6 +45,30 @@ export const userSlice = createSlice({
       state.error = action.payload;
       state.loading = false;
     },
+    deleteUserStart: (state) => {
+      state.loading = true;
+    },
+    deleteUserSuccess: (state) => {
+      state.user = null;
+      state.loading = false;
+      state.error = null;
+    },
+    deleteUserFailure: (state, action: PayloadAction<string>) => {
+      state.error = action.payload;
+      state.loading = false;
+    },
+    signOutStart: (state) => {
+      state.loading = true;
+    },
+    signOutSuccess: (state) => {
+      state.user = null;
+      state.loading = false;
+      state.error = null;
+    },
+    signOutFailure: (state, action: PayloadAction<string>) => {
+      state.error = action.payload;
+      state.loading = false;
+    },
   },
 });
 
@@ -56,10 +76,15 @@ export const {
   signInStart,
   signInSuccess,
   signInFailure,
-  signOut,
   updateUserStart,
   updateUserSuccess,
   updateUserFailure,
+  deleteUserStart,
+  deleteUserSuccess,
+  deleteUserFailure,
+  signOutStart,
+  signOutSuccess,
+  signOutFailure,
 } = userSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type

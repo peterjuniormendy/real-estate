@@ -8,7 +8,7 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../firebase";
-import { updateUser } from "../controllers/userController";
+import { deleteUser, signout, updateUser } from "../controllers/userController";
 
 const Profile = () => {
   const dispatch = useAppDispatch();
@@ -90,6 +90,14 @@ const Profile = () => {
     }
   };
 
+  const handleDeleteUser = async () => {
+    await deleteUser(user, dispatch);
+  };
+
+  const handleUserSignout = async () => {
+    await signout(dispatch);
+  };
+
   if (!user) {
     return <Navigate to={"/login"} />;
   }
@@ -151,8 +159,18 @@ const Profile = () => {
         </button>
       </form>
       <div className="flex justify-between mt-5">
-        <span className="text-red-700 cursor-pointer">Delete account</span>
-        <span className="text-red-700 cursor-pointer">Sign out</span>
+        <span
+          onClick={handleDeleteUser}
+          className="text-red-700 cursor-pointer"
+        >
+          Delete account
+        </span>
+        <span
+          onClick={handleUserSignout}
+          className="text-red-700 cursor-pointer"
+        >
+          Sign out
+        </span>
       </div>
     </div>
   );

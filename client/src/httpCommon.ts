@@ -16,6 +16,10 @@ export const loginUser = (user: object) =>
 export const registerUser = (user: object) =>
   axios.post(`${url}/auth/signup`, user, { headers });
 
-export const userUpdate = (user) => {
+export const userUpdate = (user: User) =>
   axios.put(`${url}/user/update/${user?.id}`, user);
-};
+
+export const deleteUserAccount = (user: User) =>
+  axios.delete(`${url}/user/delete/${user?._id}`);
+
+export const signoutUser = () => axios.get(`${url}/auth/signout`);

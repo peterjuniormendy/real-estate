@@ -1,8 +1,20 @@
-import { loginUser, registerUser, userUpdate } from "../httpCommon";
 import {
+  deleteUserAccount,
+  loginUser,
+  registerUser,
+  signoutUser,
+  userUpdate,
+} from "../httpCommon";
+import {
+  deleteUserFailure,
+  deleteUserStart,
+  deleteUserSuccess,
   signInFailure,
   signInStart,
   signInSuccess,
+  signOutFailure,
+  signOutStart,
+  signOutSuccess,
   updateUserFailure,
   updateUserStart,
   updateUserSuccess,
@@ -76,6 +88,39 @@ export const updateUser = async (formData: updateData, dispatch: Dispatch) => {
         error?.response?.data?.message || "Error occured while signing in"
       )
     );
+    return error?.response?.data;
+  }
+};
+
+export const deleteUser = async (user, dispatch: Dispatch) => {
+  try {
+    console.log("user", user);
+    dispatch(deleteUserStart());
+    const data = await deleteUserAccount(user);
+    if (!data?.success) {
+      dispatch(deleteUserFailure(data?.message));
+      return;
+    }
+    dispatch(deleteUserSuccess());
+    return data;
+  } catch (error: object | any) {
+    console.error(error);
+    return error?.response?.data;
+  }
+};
+
+export const signout = async (dispatch: Dispatch) => {
+  try {
+    dispatch(signOutStart());
+    const data = await signoutUser();
+    if (!data?.success) {
+      dispatch(signOutFailure(data?.message));
+      return;
+    }
+    dispatch(signOutSuccess());
+    return data;
+  } catch (error: object | any) {
+    console.error(error);
     return error?.response?.data;
   }
 };
