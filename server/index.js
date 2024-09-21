@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import userRouter from "../server/routes/userRoutes.js";
 import authRouter from "../server/routes/authRoutes.js";
+import listingRouter from "../server/routes/listingRoutes.js";
 import requestErrorMiddleware from "./middleware/requestErrorMiddleware.js";
 
 const app = express();
@@ -26,6 +27,9 @@ app.use("/api/auth", authRouter);
 
 // USER ROUTES
 app.use("/api/user", userRouter);
+
+// LISTING ROUTE
+app.use("/api/listing", listingRouter);
 
 // Middleware for custom server error
 app.use(requestErrorMiddleware);
