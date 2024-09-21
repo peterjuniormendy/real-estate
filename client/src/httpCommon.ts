@@ -29,7 +29,7 @@ export const userUpdate = (user: User) =>
   });
 
 export const deleteUserAccount = (user: User) =>
-  axios.delete(`${url}/user/delete/${user?.id}`, {
+  axios.delete(`${url}/user/delete/${user?._id}`, {
     headers,
     withCredentials: true,
   });

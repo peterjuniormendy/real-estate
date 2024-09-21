@@ -39,9 +39,6 @@ const SignUp = () => {
     }
     try {
       const res = await signupUser(formData);
-      console.log("res", res);
-      const data = await res.json();
-      console.log("data", res);
       if (res?.message === "User register successfully.") {
         navigate("/login");
         // reset form data
@@ -51,7 +48,6 @@ const SignUp = () => {
           password: "",
         });
       }
-      setError(data.message);
       setIsLoading(false);
     } catch (error) {
       setError("An error occurred during sign-up.");
@@ -64,7 +60,7 @@ const SignUp = () => {
     if (error) {
       setTimeout(() => {
         setError("");
-      }, 3000);
+      }, 6000);
     }
   }, [error]);
   return (

@@ -44,6 +44,16 @@ interface Dispatch {
   (action: any): void;
 }
 
+interface deletedUser {
+  id: string; // or number depending on your case
+  email: string;
+  username: string;
+  avatar: string;
+  password: string;
+
+  [key: string]: string | number; // if you want to allow additional properties
+}
+
 export const signinUser = async (formData: signInData, dispatch: Dispatch) => {
   try {
     dispatch(signInStart());
@@ -91,11 +101,10 @@ export const updateUser = async (formData: updateData, dispatch: Dispatch) => {
   }
 };
 
-export const deleteUser = async (user, dispatch: Dispatch) => {
+export const deleteUser = async (user: deletedUser, dispatch: Dispatch) => {
   try {
-    console.log("user", user);
     dispatch(deleteUserStart());
-    const data = await deleteUserAccount(user);
+    const { data } = await deleteUserAccount(user);
     if (!data?.success) {
       dispatch(deleteUserFailure(data?.message));
       return;
