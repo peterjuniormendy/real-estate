@@ -74,13 +74,12 @@ export const signupUser = async (formData: signUpData) => {
 export const updateUser = async (formData: updateData, dispatch: Dispatch) => {
   try {
     dispatch(updateUserStart());
-    const data = await userUpdate(formData);
-
+    const { data } = await userUpdate(formData);
     if (!data?.success) {
       dispatch(updateUserFailure(data?.message));
       return;
     }
-    dispatch(updateUserSuccess(data));
+    dispatch(updateUserSuccess(data?.data));
   } catch (error: object | any) {
     console.error(error);
     dispatch(
@@ -112,7 +111,7 @@ export const deleteUser = async (user, dispatch: Dispatch) => {
 export const signout = async (dispatch: Dispatch) => {
   try {
     dispatch(signOutStart());
-    const data = await signoutUser();
+    const { data } = await signoutUser();
     if (!data?.success) {
       dispatch(signOutFailure(data?.message));
       return;
