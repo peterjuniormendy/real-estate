@@ -10,6 +10,11 @@ interface User {
   [key: string]: any; // if you want to allow additional properties
 }
 
+interface Listing {
+  name: string;
+  [key: string]: any;
+}
+
 // Add withCredentials to ensure cookies are sent
 export const loginUser = (user: object) =>
   axios.post(`${url}/auth/login`, user, {
@@ -36,6 +41,12 @@ export const deleteUserAccount = (user: User) =>
 
 export const signoutUser = () =>
   axios.get(`${url}/auth/signout`, {
+    headers,
+    withCredentials: true,
+  });
+
+export const addListing = (listing: Listing) =>
+  axios.post(`${url}/listing/create`, listing, {
     headers,
     withCredentials: true,
   });

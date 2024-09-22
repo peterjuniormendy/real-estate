@@ -44,7 +44,7 @@ interface Dispatch {
   (action: any): void;
 }
 
-interface deletedUser {
+interface DeletedUser {
   id: string; // or number depending on your case
   email: string;
   username: string;
@@ -101,7 +101,7 @@ export const updateUser = async (formData: updateData, dispatch: Dispatch) => {
   }
 };
 
-export const deleteUser = async (user: deletedUser, dispatch: Dispatch) => {
+export const deleteUser = async (user: DeletedUser, dispatch: Dispatch) => {
   try {
     dispatch(deleteUserStart());
     const { data } = await deleteUserAccount(user);

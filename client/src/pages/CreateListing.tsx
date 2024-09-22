@@ -11,6 +11,7 @@ import { FaTrash } from "react-icons/fa";
 import { getAuth } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../redux/hooks";
+import { createListing } from "../controllers/listingController";
 
 const CreateListing = () => {
   const navigate = useNavigate();
@@ -31,6 +32,7 @@ const CreateListing = () => {
     offer: false,
     parking: false,
     furnished: false,
+    userRef: user._id,
   });
   const [uploadError, setUploadError] = useState<string>("");
   const [isUploading, setIsUpLoading] = useState<boolean>(false);
@@ -39,7 +41,6 @@ const CreateListing = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted", formData);
     try {
       if (formData.imageUrls.length < 1)
         return setError("You must upload atleast one image.");
@@ -48,20 +49,13 @@ const CreateListing = () => {
 
       setLoading(true);
       setError("");
-      const res = await fetch("http://localhost:5000/api/listing/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ ...formData, userRef: user._id }),
-      });
-      const data = await res.json();
-      console.log("response", res);
+      const { data } = await createListing(formData);
+      console.log("Data", data);
       setLoading(false);
-      if (data.success) {
-        navigate("/listing/data.data._id");
+      if (data) {
+        navigate(`/listing/${data._id}`);
       } else {
-        setError(data.message);
+        setError(data?.message);
       }
     } catch (error) {
       setLoading(false);
@@ -82,7 +76,6 @@ const CreateListing = () => {
     }
   };
 
-  console.log("formData", formData);
   const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
