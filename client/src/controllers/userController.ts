@@ -1,5 +1,6 @@
 import {
   deleteUserAccount,
+  getAllUserListings,
   loginUser,
   registerUser,
   signoutUser,
@@ -44,7 +45,7 @@ interface Dispatch {
   (action: any): void;
 }
 
-interface DeletedUser {
+interface User {
   id: string; // or number depending on your case
   email: string;
   username: string;
@@ -101,7 +102,7 @@ export const updateUser = async (formData: updateData, dispatch: Dispatch) => {
   }
 };
 
-export const deleteUser = async (user: DeletedUser, dispatch: Dispatch) => {
+export const deleteUser = async (user: User, dispatch: Dispatch) => {
   try {
     dispatch(deleteUserStart());
     const { data } = await deleteUserAccount(user);
@@ -130,5 +131,16 @@ export const signout = async (dispatch: Dispatch) => {
   } catch (error: object | any) {
     console.error(error);
     return error?.response?.data;
+  }
+};
+
+export const getAllUserListing = async (user: User) => {
+  try {
+    const { data } = await getAllUserListings(user);
+    if (data?.success) {
+      return data.data;
+    }
+  } catch (error: object | any) {
+    console.error(error);
   }
 };

@@ -6,7 +6,7 @@ const headers: AxiosRequestConfig["headers"] = {
 };
 
 interface User {
-  id: string; // or number depending on your case
+  username: string; // or number depending on your case
   [key: string]: any; // if you want to allow additional properties
 }
 
@@ -47,6 +47,12 @@ export const signoutUser = () =>
 
 export const addListing = (listing: Listing) =>
   axios.post(`${url}/listing/create`, listing, {
+    headers,
+    withCredentials: true,
+  });
+
+export const getAllUserListings = (user: User) =>
+  axios.get(`${url}/user/listings/${user?._id}`, {
     headers,
     withCredentials: true,
   });
