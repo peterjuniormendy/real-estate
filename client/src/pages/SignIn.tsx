@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import Oauth from "../components/Oauth";
 import { signinUser } from "../controllers/userController";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
@@ -11,7 +11,7 @@ interface FormData {
 
 const SignIn = () => {
   const dispatch = useAppDispatch();
-  const { error, loading } = useAppSelector((state) => state.user);
+  const { error, loading, user } = useAppSelector((state) => state.user);
 
   const [formData, setFormData] = useState<FormData>({
     email: "",
@@ -50,6 +50,10 @@ const SignIn = () => {
       console.log(error);
     }
   };
+
+  if (user) {
+    return <Navigate to={"/profile"} />;
+  }
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl text-center font-semibold my-7">Sign In</h1>
