@@ -9,11 +9,13 @@ import CreateListing from "./pages/CreateListing";
 import Listing from "./pages/Listing";
 import Listings from "./pages/Listings";
 import PrivateRoute from "./components/PrivateRoute";
-
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 function App() {
   return (
     <BrowserRouter>
       <Header />
+      <ToastContainer />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<SignIn />} />

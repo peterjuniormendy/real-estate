@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import {
   deleteUserAccount,
   getAllUserListings,
@@ -59,26 +60,37 @@ export const signinUser = async (formData: signInData, dispatch: Dispatch) => {
   try {
     dispatch(signInStart());
     const { data } = await loginUser(formData);
+    if (data) {
+      toast.success(data?.message);
+    }
     dispatch(signInSuccess(data.data));
     return data;
   } catch (error: object | any) {
     console.error(error);
+    toast.error(
+      error?.response?.data?.message || "Error occure while user signin."
+    );
+
     dispatch(
       signInFailure(
         error?.response?.data?.message || "Error occured while signing in"
       )
     );
-    return error?.response?.data;
   }
 };
 
 export const signupUser = async (formData: signUpData) => {
   try {
     const { data } = await registerUser(formData);
+    if (data) {
+      toast.success(data);
+    }
     return data;
   } catch (error: object | any) {
     console.error(error);
-    return error?.response?.data;
+    toast.error(
+      error?.response?.data?.message || "Error occure while user signup."
+    );
   }
 };
 
@@ -87,18 +99,23 @@ export const updateUser = async (formData: updateData, dispatch: Dispatch) => {
     dispatch(updateUserStart());
     const { data } = await userUpdate(formData);
     if (!data?.success) {
+      toast.error(data?.message);
       dispatch(updateUserFailure(data?.message));
       return;
     }
+    toast.success(data?.message);
     dispatch(updateUserSuccess(data?.data));
   } catch (error: object | any) {
     console.error(error);
+    toast.error(
+      error?.response?.data?.message || "Error occured while signing in"
+    );
+
     dispatch(
       updateUserFailure(
         error?.response?.data?.message || "Error occured while signing in"
       )
     );
-    return error?.response?.data;
   }
 };
 
@@ -107,14 +124,18 @@ export const deleteUser = async (user: User, dispatch: Dispatch) => {
     dispatch(deleteUserStart());
     const { data } = await deleteUserAccount(user);
     if (!data?.success) {
+      toast.error(data?.message);
       dispatch(deleteUserFailure(data?.message));
       return;
     }
+    toast.success(data?.message);
     dispatch(deleteUserSuccess());
-    return data;
   } catch (error: object | any) {
     console.error(error);
-    return error?.response?.data;
+    toast.error(
+      error?.response?.data?.message ||
+        "Error occure while deleting user account."
+    );
   }
 };
 
@@ -123,14 +144,17 @@ export const signout = async (dispatch: Dispatch) => {
     dispatch(signOutStart());
     const { data } = await signoutUser();
     if (!data?.success) {
+      toast.error(data?.message);
       dispatch(signOutFailure(data?.message));
       return;
     }
+    toast.success(data?.message);
     dispatch(signOutSuccess());
-    return data;
   } catch (error: object | any) {
     console.error(error);
-    return error?.response?.data;
+    toast.error(
+      error?.response?.data?.message || "Error occure while signing out user."
+    );
   }
 };
 
@@ -142,5 +166,9 @@ export const getAllUserListing = async (user: User) => {
     }
   } catch (error: object | any) {
     console.error(error);
+    toast.error(
+      error?.response?.data?.message ||
+        "Error occure while getting user listings."
+    );
   }
 };

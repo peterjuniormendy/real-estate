@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate, Navigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import Oauth from "../components/Oauth";
 import { signupUser } from "../controllers/userController";
 import { useAppSelector } from "../redux/hooks";
@@ -18,7 +19,6 @@ const SignUp = () => {
     email: "",
     password: "",
   });
-  const [error, setError] = useState<string>("");
   const navigate = useNavigate();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -31,17 +31,17 @@ const SignUp = () => {
     e.preventDefault();
     setIsLoading(true);
     if (formData.email === "") {
-      return setError("Email is required");
+      return toast.error("Email is required");
     }
     if (formData.username === "") {
-      return setError("Username is required");
+      return toast.error("Username is required");
     }
     if (formData.password === "") {
-      return setError("Password is required");
+      return toast.error("Password is required");
     }
     try {
       const res = await signupUser(formData);
-      if (res?.message === "User register successfully.") {
+      if (res) {
         navigate("/login");
         // reset form data
         setFormData({
@@ -52,19 +52,11 @@ const SignUp = () => {
       }
       setIsLoading(false);
     } catch (error) {
-      setError("An error occurred during sign-up.");
+      toast.error("An error occurred during sign-up.");
     } finally {
       setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    if (error) {
-      setTimeout(() => {
-        setError("");
-      }, 6000);
-    }
-  }, [error]);
 
   if (user) {
     return <Navigate to="/profile" />;
@@ -77,11 +69,6 @@ const SignUp = () => {
         onSubmit={handleSubmit}
         className="flex flex-col items-center justify-center gap-4"
       >
-        {error && (
-          <div className="w-full bg-red-200 text-red-400 py-2 text-center">
-            <p>{error}</p>
-          </div>
-        )}
         <input
           type="text"
           name="username"

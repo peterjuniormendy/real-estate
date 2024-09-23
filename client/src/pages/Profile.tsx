@@ -13,7 +13,7 @@ import { deleteUser, signout, updateUser } from "../controllers/userController";
 const Profile = () => {
   const dispatch = useAppDispatch();
   const profileRef = useRef(null);
-  const { user, loading, error } = useAppSelector((state) => state.user);
+  const { user, loading } = useAppSelector((state) => state.user);
   const [file, setFile] = useState<File | undefined>(undefined);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [uploadError, setUploadError] = useState<any>(null);
@@ -106,11 +106,11 @@ const Profile = () => {
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
       <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
-        {error && (
+        {/* {error && (
           <div className="w-full bg-red-200 text-red-400 py-2 text-center">
             <p>{error}</p>
           </div>
-        )}
+        )} */}
         <input
           onChange={(e) => setFile(e.target.files?.[0])}
           type="file"

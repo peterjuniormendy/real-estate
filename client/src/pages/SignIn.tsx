@@ -11,7 +11,7 @@ interface FormData {
 
 const SignIn = () => {
   const dispatch = useAppDispatch();
-  const { error, loading, user } = useAppSelector((state) => state.user);
+  const { loading, user } = useAppSelector((state) => state.user);
 
   const [formData, setFormData] = useState<FormData>({
     email: "",
@@ -55,18 +55,12 @@ const SignIn = () => {
     return <Navigate to={"/profile"} />;
   }
   return (
-    <div className="p-3 max-w-lg mx-auto">
+    <div className="p-3 max-w-lg mx-auto relative">
       <h1 className="text-3xl text-center font-semibold my-7">Sign In</h1>
       <form
         onSubmit={handleSubmit}
         className="flex flex-col items-center justify-center gap-4"
       >
-        {error && (
-          <div className="w-full bg-red-200 text-red-400 py-2 text-center">
-            <p>{error}</p>
-          </div>
-        )}
-
         <input
           id="email"
           type="text"
