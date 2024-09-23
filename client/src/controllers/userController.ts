@@ -2,6 +2,7 @@ import { toast } from "react-toastify";
 import {
   deleteUserAccount,
   getAllUserListings,
+  googleSignin,
   loginUser,
   registerUser,
   signoutUser,
@@ -32,6 +33,13 @@ interface signUpData {
   email: string;
   password: string;
   username: string;
+  [key: string]: string | any;
+}
+
+interface GoogleData {
+  username: string | null;
+  email: string | null;
+  avatar: string | null;
 }
 
 interface updateData {
@@ -90,6 +98,24 @@ export const signupUser = async (formData: signUpData) => {
     console.error(error);
     toast.error(
       error?.response?.data?.message || "Error occure while user signup."
+    );
+  }
+};
+
+export const signinWithGoogle = async (
+  formData: GoogleData,
+  dispatch: Dispatch
+) => {
+  try {
+    const { data } = await googleSignin(formData);
+    if (data.success) {
+      toast.success(data.message);
+    }
+    dispatch(signInSuccess(data.data));
+  } catch (error: object | any) {
+    console.error(error);
+    toast.error(
+      error?.response?.data?.message || "Error occure while user signin."
     );
   }
 };

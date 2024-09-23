@@ -1,35 +1,21 @@
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+import { signinWithGoogle } from "../controllers/userController";
 import { app } from "../firebase";
 import { useAppDispatch } from "../redux/hooks";
-import { signInSuccess } from "../redux/slice/userSlice";
-
-interface Dispatch {
-  (action: any): void;
-}
 
 const Oauth = () => {
-  const dispatch: Dispatch = useAppDispatch();
-  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const handleGoogleCLick = async () => {
     try {
       const provider = new GoogleAuthProvider();
       const auth = getAuth(app);
       const result = await signInWithPopup(auth, provider);
-      const res = await fetch("http://localhost:5000/api/auth/google", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: result.user.displayName,
-          email: result.user.email,
-          photo: result.user.photoURL,
-        }),
-      });
-      const { data } = await res.json();
-      dispatch(signInSuccess(data));
-      navigate("/");
+      const formData = {
+        username: result?.user?.displayName,
+        email: result?.user?.email,
+        avatar: result?.user?.photoURL,
+      };
+      await signinWithGoogle(formData, dispatch);
     } catch (error) {
       console.log(error);
     }

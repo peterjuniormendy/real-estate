@@ -27,6 +27,12 @@ export const registerUser = (user: object) =>
     headers,
   });
 
+export const googleSignin = (user: object) =>
+  axios.post(`${url}/auth/google`, user, {
+    headers,
+    withCredentials: true,
+  });
+
 export const userUpdate = (user: User) =>
   axios.put(`${url}/user/update/${user?.id}`, user, {
     headers,
