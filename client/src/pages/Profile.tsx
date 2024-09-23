@@ -106,11 +106,6 @@ const Profile = () => {
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
       <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
-        {/* {error && (
-          <div className="w-full bg-red-200 text-red-400 py-2 text-center">
-            <p>{error}</p>
-          </div>
-        )} */}
         <input
           onChange={(e) => setFile(e.target.files?.[0])}
           type="file"

@@ -43,7 +43,6 @@ const SignUp = () => {
       const res = await signupUser(formData);
       if (res) {
         navigate("/login");
-        // reset form data
         setFormData({
           username: "",
           email: "",
