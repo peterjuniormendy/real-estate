@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
-// import { persistor } from "../store";
+import { PURGE } from "redux-persist";
 
 // Define a type for the slice state
 interface UserState {
@@ -49,11 +49,8 @@ export const userSlice = createSlice({
     deleteUserStart: (state) => {
       state.loading = true;
     },
-    deleteUserSuccess: (state) => {
-      state.user = null;
-      state.loading = false;
-      state.error = null;
-      // persistor.purge();
+    deleteUserSuccess: () => {
+      return initialState;
     },
     deleteUserFailure: (state, action: PayloadAction<string>) => {
       state.error = action.payload;
@@ -62,16 +59,20 @@ export const userSlice = createSlice({
     signOutStart: (state) => {
       state.loading = true;
     },
-    signOutSuccess: (state) => {
-      state.user = null;
-      state.loading = false;
-      state.error = null;
-      // persistor.purge();
+    signOutSuccess: () => {
+      return initialState;
     },
     signOutFailure: (state, action: PayloadAction<string>) => {
       state.error = action.payload;
       state.loading = false;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(PURGE, () => {
+      // This reducer will be called when the PURGE action is dispatched
+      // Return the initial state to clear everything
+      return initialState;
+    });
   },
 });
 

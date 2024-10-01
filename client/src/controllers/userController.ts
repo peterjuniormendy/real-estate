@@ -1,4 +1,5 @@
 import { toast } from "react-toastify";
+import { purgeStoredState } from "../redux/store";
 import {
   deleteUserAccount,
   getAllUserListings,
@@ -9,6 +10,7 @@ import {
   userUpdate,
 } from "../httpCommon";
 import {
+  clearListings,
   getListingsFailure,
   getListingsStart,
   getListingsSuccess,
@@ -161,6 +163,8 @@ export const deleteUser = async (user: User, dispatch: Dispatch) => {
     }
     toast.success(data?.message);
     dispatch(deleteUserSuccess());
+    dispatch(purgeStoredState());
+    dispatch(clearListings());
   } catch (error: object | any) {
     console.error(error);
     toast.error(
@@ -181,6 +185,8 @@ export const signout = async (dispatch: Dispatch) => {
     }
     toast.success(data?.message);
     dispatch(signOutSuccess());
+    dispatch(purgeStoredState());
+    dispatch(clearListings());
   } catch (error: object | any) {
     console.error(error);
     toast.error(
@@ -193,7 +199,6 @@ export const getAllUserListing = async (user: User, dispatch: Dispatch) => {
   try {
     dispatch(getListingsStart());
     const { data } = await getAllUserListings(user);
-    console.log("listings", data);
     if (data?.success) {
       dispatch(getListingsSuccess(data?.data));
       return;

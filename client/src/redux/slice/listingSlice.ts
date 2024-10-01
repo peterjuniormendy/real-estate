@@ -48,6 +48,9 @@ export const listingSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    clearListings: () => {
+      return initialState;
+    },
   },
 });
 // export the actions
@@ -58,6 +61,7 @@ export const {
   getCurrentListingStart,
   getCurrentListingSuccess,
   getCurrentListingFailure,
+  clearListings,
 } = listingSlice.actions;
 // export the reducer
 export default listingSlice.reducer;
