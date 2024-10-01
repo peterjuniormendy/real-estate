@@ -7,8 +7,8 @@ export interface User {
 }
 
 export interface Listing {
-  id: string;
-  title: string;
+  _id: string;
+  name: string;
   description: string;
   price: number;
   location: string;

@@ -62,3 +62,12 @@ export const getAllUserListings = (user: User) =>
     headers,
     withCredentials: true,
   });
+
+export const getListing = (listingId: string) =>
+  axios.get(`${url}/user/listings/${listingId}`);
+
+export const deleteUserListing = (id: string) =>
+  axios.delete(`${url}/listing/delete/${id}`, {
+    headers,
+    withCredentials: true,
+  });

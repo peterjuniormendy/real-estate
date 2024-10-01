@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
+import { Listing } from "../../interfaces";
 
 interface ListingState {
-  listings: any[];
+  listings: Listing[];
   currentListing: object | null;
   loading: boolean;
   error: string | null;
@@ -48,6 +49,53 @@ export const listingSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    createListingStart: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    createListingSuccess: (state, action: PayloadAction<Listing>) => {
+      state.listings.push(action.payload);
+      state.currentListing = action.payload;
+      state.loading = false;
+      state.error = null;
+    },
+    createListingFailure: (state) => {
+      state.currentListing = null;
+      state.loading = false;
+      state.error = null;
+    },
+    deleteListingStart: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    deleteListingSuccess: (state, action: PayloadAction<string>) => {
+      state.listings.filter((listing) => listing._id !== action.payload);
+      state.currentListing = null;
+      state.loading = false;
+      state.error = null;
+    },
+    deleteListingFailure: (state) => {
+      state.currentListing = null;
+      state.loading = false;
+      state.error = null;
+    },
+    editListingStart: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    editListingSuccess: (state, action: PayloadAction<Listing>) => {
+      state.listings = state.listings.map((listing) =>
+        listing._id === action.payload?._id ? action.payload : listing
+      );
+      state.currentListing = action.payload;
+      state.loading = false;
+      state.error = null;
+    },
+    editListingFailure: (state) => {
+      state.currentListing = null;
+      state.loading = false;
+      state.error = null;
+    },
     clearListings: () => {
       return initialState;
     },
@@ -61,6 +109,15 @@ export const {
   getCurrentListingStart,
   getCurrentListingSuccess,
   getCurrentListingFailure,
+  createListingStart,
+  createListingSuccess,
+  createListingFailure,
+  deleteListingStart,
+  deleteListingSuccess,
+  deleteListingFailure,
+  editListingStart,
+  editListingSuccess,
+  editListingFailure,
   clearListings,
 } = listingSlice.actions;
 // export the reducer

@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { deleteListing } from "../controllers/listingController";
 import { getAllUserListing } from "../controllers/userController";
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
 
@@ -14,6 +15,14 @@ const Listings: React.FC = () => {
       await getAllUserListing(user, dispatch);
     } catch (error) {
       console.error("Error fetching listings:", error);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteListing(id, dispatch);
+    } catch (error) {
+      console.error("Error deleting listing:", error);
     }
   };
 
@@ -60,13 +69,14 @@ const Listings: React.FC = () => {
               <div className="space-x-4">
                 <button
                   type="button"
-                  className="p-4 bg-orange-300 rounded-sm shadow-lg active:shadow-none"
+                  className="p-4 bg-green-300 rounded-sm shadow-lg active:shadow-none"
                 >
-                  <FaEdit className="text-orange-600" />
+                  <FaEdit className="text-green-600" />
                 </button>
 
                 <button
                   type="button"
+                  onClick={() => handleDelete(listing._id)}
                   className="p-4 bg-red-300 rounded-sm shadow-lg active:shadow-none"
                 >
                   <FaTrash className="text-red-600" />
