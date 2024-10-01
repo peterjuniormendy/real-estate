@@ -9,6 +9,11 @@ import {
   userUpdate,
 } from "../httpCommon";
 import {
+  getListingsFailure,
+  getListingsStart,
+  getListingsSuccess,
+} from "../redux/slice/listingSlice";
+import {
   deleteUserFailure,
   deleteUserStart,
   deleteUserSuccess,
@@ -68,13 +73,12 @@ export const signinUser = async (formData: signInData, dispatch: Dispatch) => {
   try {
     dispatch(signInStart());
     const { data } = await loginUser(formData);
-    if (data) {
+    if (data?.success) {
       toast.success(data?.message);
     }
     dispatch(signInSuccess(data.data));
     return data;
   } catch (error: object | any) {
-    console.error(error);
     toast.error(
       error?.response?.data?.message || "Error occure while user signin."
     );
@@ -84,6 +88,7 @@ export const signinUser = async (formData: signInData, dispatch: Dispatch) => {
         error?.response?.data?.message || "Error occured while signing in"
       )
     );
+    return error.response?.data;
   }
 };
 
@@ -184,17 +189,23 @@ export const signout = async (dispatch: Dispatch) => {
   }
 };
 
-export const getAllUserListing = async (user: User) => {
+export const getAllUserListing = async (user: User, dispatch: Dispatch) => {
   try {
+    dispatch(getListingsStart());
     const { data } = await getAllUserListings(user);
+    console.log("listings", data);
     if (data?.success) {
-      return data.data;
+      dispatch(getListingsSuccess(data?.data));
+      return;
     }
+    dispatch(getListingsFailure(data?.message));
+    toast.error(data?.message);
   } catch (error: object | any) {
     console.error(error);
     toast.error(
       error?.response?.data?.message ||
         "Error occure while getting user listings."
     );
+    dispatch(getListingsFailure(error.response?.data?.message));
   }
 };

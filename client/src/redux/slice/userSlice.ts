@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
+// import { persistor } from "../store";
 
 // Define a type for the slice state
 interface UserState {
@@ -52,6 +53,7 @@ export const userSlice = createSlice({
       state.user = null;
       state.loading = false;
       state.error = null;
+      // persistor.purge();
     },
     deleteUserFailure: (state, action: PayloadAction<string>) => {
       state.error = action.payload;
@@ -64,6 +66,7 @@ export const userSlice = createSlice({
       state.user = null;
       state.loading = false;
       state.error = null;
+      // persistor.purge();
     },
     signOutFailure: (state, action: PayloadAction<string>) => {
       state.error = action.payload;
