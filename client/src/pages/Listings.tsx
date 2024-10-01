@@ -1,4 +1,6 @@
 import React, { useEffect } from "react";
+import { FaEdit, FaTrash } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import { getAllUserListing } from "../controllers/userController";
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
 
@@ -38,10 +40,38 @@ const Listings: React.FC = () => {
       <div>
         {listings.length > 0 ? (
           listings.map((listing) => (
-            <div key={listing._id} className="border p-4 my-2 rounded">
-              {/* Display listing details here */}
-              <h2>{listing.title}</h2>
-              <p>{listing.description}</p>
+            <div
+              key={listing._id}
+              className="border p-4 my-2 rounded flex items-center gap-4"
+            >
+              <Link to={`/listing/${listing._id}`}>
+                <img
+                  src={listing.imageUrls[0]}
+                  alt="listing cover image"
+                  className="w-20 h-16 object-contain"
+                />
+              </Link>
+              <Link
+                className="font-semibold flex-1 truncate hover:underline"
+                to={`/listing/${listing._id}`}
+              >
+                <p>{listing.name}</p>
+              </Link>
+              <div className="space-x-4">
+                <button
+                  type="button"
+                  className="p-4 bg-orange-300 rounded-sm shadow-lg active:shadow-none"
+                >
+                  <FaEdit className="text-orange-600" />
+                </button>
+
+                <button
+                  type="button"
+                  className="p-4 bg-red-300 rounded-sm shadow-lg active:shadow-none"
+                >
+                  <FaTrash className="text-red-600" />
+                </button>
+              </div>
             </div>
           ))
         ) : (
