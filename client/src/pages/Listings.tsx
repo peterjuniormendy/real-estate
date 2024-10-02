@@ -70,12 +70,14 @@ const Listings: React.FC = () => {
                 <p>{listing.name}</p>
               </Link>
               <div className="space-x-4">
-                <button
-                  type="button"
-                  className="p-4 bg-green-300 rounded-sm shadow-lg active:shadow-none"
-                >
-                  <FaEdit className="text-green-600" />
-                </button>
+                <Link to={`/update-listing/${listing._id}`}>
+                  <button
+                    type="button"
+                    className="p-4 bg-green-300 rounded-sm shadow-lg active:shadow-none"
+                  >
+                    <FaEdit className="text-green-600" />
+                  </button>
+                </Link>
 
                 <button
                   type="button"

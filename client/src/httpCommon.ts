@@ -71,3 +71,14 @@ export const deleteUserListing = (id: string) =>
     headers,
     withCredentials: true,
   });
+
+export const updateUserListing = (listing: Listing, id: string) =>
+  axios.put(`${url}/listing/update/${id}`, listing, {
+    headers,
+    withCredentials: true,
+  });
+
+export const getSingleListing = (id: string) =>
+  axios.get(`${url}/listing/${id}`, {
+    headers,
+  });

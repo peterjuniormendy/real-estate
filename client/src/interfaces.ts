@@ -6,6 +6,13 @@ export interface User {
   // Add any other user properties here
 }
 
+export interface ListingState {
+  listings: Listing[];
+  currentListing: object | null;
+  loading: boolean;
+  error: string | null;
+}
+
 export interface Listing {
   _id: string;
   name: string;

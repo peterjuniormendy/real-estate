@@ -1,13 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { Listing } from "../../interfaces";
-
-interface ListingState {
-  listings: Listing[];
-  currentListing: object | null;
-  loading: boolean;
-  error: string | null;
-}
+import { Listing, ListingState } from "../../interfaces";
 
 // set the initial state
 const initialState: ListingState = {
@@ -79,6 +72,19 @@ export const listingSlice = createSlice({
       state.loading = false;
       state.error = null;
     },
+    getListingStart: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    getListingSuccess: (state, action: PayloadAction<Listing>) => {
+      state.currentListing = action.payload;
+      state.loading = false;
+      state.error = null;
+    },
+    getListingFailure: (state, action: PayloadAction<string>) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
     editListingStart: (state) => {
       state.loading = true;
       state.error = null;
@@ -112,13 +118,16 @@ export const {
   createListingStart,
   createListingSuccess,
   createListingFailure,
+  getListingStart,
+  getListingSuccess,
+  getListingFailure,
   deleteListingStart,
   deleteListingSuccess,
   deleteListingFailure,
   editListingStart,
   editListingSuccess,
   editListingFailure,
-  clearListings,
+  // clearListings,
 } = listingSlice.actions;
 // export the reducer
 export default listingSlice.reducer;
