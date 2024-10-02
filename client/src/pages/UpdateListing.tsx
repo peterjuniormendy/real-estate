@@ -56,7 +56,7 @@ const UpdateListing = () => {
       console.log("Data", data);
       setLoading(false);
       if (data?.success) {
-        navigate(`/listing/${data._id}`);
+        navigate(`/listing/${data?.data._id}`);
       } else {
         setError("");
       }
