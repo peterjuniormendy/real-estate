@@ -10,7 +10,6 @@ import {
   userUpdate,
 } from "../httpCommon";
 import {
-  clearListings,
   getListingsFailure,
   getListingsStart,
   getListingsSuccess,
@@ -164,7 +163,6 @@ export const deleteUser = async (user: User, dispatch: Dispatch) => {
     toast.success(data?.message);
     dispatch(deleteUserSuccess());
     dispatch(purgeStoredState());
-    dispatch(clearListings());
   } catch (error: object | any) {
     console.error(error);
     toast.error(
@@ -186,7 +184,6 @@ export const signout = async (dispatch: Dispatch) => {
     toast.success(data?.message);
     dispatch(signOutSuccess());
     dispatch(purgeStoredState());
-    dispatch(clearListings());
   } catch (error: object | any) {
     console.error(error);
     toast.error(

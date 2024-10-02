@@ -21,23 +21,20 @@ const Listings: React.FC = () => {
   const handleDelete = async (id: string) => {
     try {
       await deleteListing(id, dispatch);
+      fetchListing();
     } catch (error) {
       console.error("Error deleting listing:", error);
     }
   };
 
   useEffect(() => {
-    if (listings.length === 0) {
-      fetchListing();
-    }
-  }, [listings.length, user]);
-
-  console.log(listings);
+    fetchListing();
+  }, []);
 
   return (
     <main className="p-4 max-w-6xl mx-auto">
       <h1 className="text-3xl text-center font-semibold my-7">Your Listings</h1>
-      <div>
+      <div className="flex justify-between items-center mb-4">
         <button
           type="button"
           onClick={fetchListing}
@@ -45,6 +42,12 @@ const Listings: React.FC = () => {
         >
           Refresh Listings
         </button>
+        <Link
+          to="/create-listing"
+          className="bg-green-700 text-white text-center rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-95"
+        >
+          Create Listing
+        </Link>
       </div>
       <div>
         {listings.length > 0 ? (

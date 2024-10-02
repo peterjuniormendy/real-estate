@@ -96,9 +96,9 @@ export const listingSlice = createSlice({
       state.loading = false;
       state.error = null;
     },
-    clearListings: () => {
-      return initialState;
-    },
+    // clearListings: () => {
+    //   return initialState;
+    // },
   },
 });
 // export the actions
