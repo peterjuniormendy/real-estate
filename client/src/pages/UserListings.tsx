@@ -5,7 +5,7 @@ import { deleteListing } from "../controllers/listingController";
 import { getAllUserListing } from "../controllers/userController";
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
 
-const Listings: React.FC = () => {
+const UserListings: React.FC = () => {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.user);
   const { listings } = useAppSelector((state) => state.listings);
@@ -99,4 +99,4 @@ const Listings: React.FC = () => {
   );
 };
 
-export default Listings;
+export default UserListings;

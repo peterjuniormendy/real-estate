@@ -7,7 +7,7 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import CreateListing from "./pages/CreateListing";
 import Listing from "./pages/Listing";
-import Listings from "./pages/Listings";
+import UserListings from "./pages/UserListings";
 import PrivateRoute from "./components/PrivateRoute";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
@@ -26,9 +26,9 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/create-listing" element={<CreateListing />} />
           <Route path="/update-listing/:id" element={<UpdateListing />} />
-          <Route path="/listings" element={<Listings />} />
-          <Route path="/listing/:id" element={<Listing />} />
+          <Route path="/my-listings" element={<UserListings />} />
         </Route>
+        <Route path="/listing/:id" element={<Listing />} />
       </Routes>
     </BrowserRouter>
   );
