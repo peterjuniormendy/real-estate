@@ -26,8 +26,8 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/create-listing" element={<CreateListing />} />
           <Route path="/update-listing/:id" element={<UpdateListing />} />
-          <Route path="/listing/:id" element={<Listing />} />
           <Route path="/listings" element={<Listings />} />
+          <Route path="/listing/:id" element={<Listing />} />
         </Route>
       </Routes>
     </BrowserRouter>

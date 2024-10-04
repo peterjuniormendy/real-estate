@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { useHref, useLocation, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { getListing } from "../controllers/listingController";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -14,15 +14,17 @@ import {
   FaParking,
 } from "react-icons/fa";
 import { FaRegShareFromSquare } from "react-icons/fa6";
+import Contact from "../components/Contact";
 
 const Listing = () => {
-  console.log("first", window.location.href);
   SwiperCore.use([Navigation]);
   const dispatch = useAppDispatch();
   const { id } = useParams();
+  const { user } = useAppSelector((state) => state.user);
   const { currentListing, loading, error } = useAppSelector(
     (state) => state.listings
   );
+  const [showContactForm, setShowContactForm] = useState(false);
 
   const fetchListing = async () => {
     try {
@@ -39,7 +41,6 @@ const Listing = () => {
   useEffect(() => {
     fetchListing();
   }, [id]);
-  console.log("current listing", currentListing);
   return (
     <main>
       {loading && <p className="text-center my-7 text-2xl">Loading...</p>}
@@ -116,6 +117,18 @@ const Listing = () => {
                 {currentListing.furnished ? "Furnished" : "Unfurnished"}
               </li>
             </ul>
+            {/* Condition to be change later. Button should only show for the non poster on the property. */}
+            {user &&
+              user._id !== currentListing.userRef &&
+              !showContactForm && (
+                <button
+                  onClick={() => setShowContactForm(true)}
+                  className="w-full py-2 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95"
+                >
+                  Contact landlord
+                </button>
+              )}
+            {showContactForm && <Contact listing={currentListing} />}
           </div>
         </>
       )}

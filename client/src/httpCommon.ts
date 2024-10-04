@@ -82,3 +82,9 @@ export const getSingleListing = (id: string) =>
   axios.get(`${url}/listing/${id}`, {
     headers,
   });
+
+export const getUserInfo = (id: string) =>
+  axios.get(`${url}/user/${id}`, {
+    headers,
+    withCredentials: true,
+  });

@@ -3,6 +3,7 @@ import { purgeStoredState } from "../redux/store";
 import {
   deleteUserAccount,
   getAllUserListings,
+  getUserInfo,
   googleSignin,
   loginUser,
   registerUser,
@@ -209,5 +210,15 @@ export const getAllUserListing = async (user: User, dispatch: Dispatch) => {
         "Error occure while getting user listings."
     );
     dispatch(getListingsFailure(error.response?.data?.message));
+  }
+};
+
+export const getUser = async (id: string) => {
+  try {
+    const { data } = await getUserInfo(id);
+    console.log("data", data);
+    return data;
+  } catch (error: object | any) {
+    console.log("error occured: ", error);
   }
 };
