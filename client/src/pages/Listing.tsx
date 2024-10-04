@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useHref, useLocation, useParams } from "react-router-dom";
 import { getListing } from "../controllers/listingController";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -13,8 +13,10 @@ import {
   FaMapMarkedAlt,
   FaParking,
 } from "react-icons/fa";
+import { FaRegShareFromSquare } from "react-icons/fa6";
 
 const Listing = () => {
+  console.log("first", window.location.href);
   SwiperCore.use([Navigation]);
   const dispatch = useAppDispatch();
   const { id } = useParams();
@@ -28,6 +30,10 @@ const Listing = () => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(window.location.href);
   };
 
   useEffect(() => {
@@ -48,12 +54,17 @@ const Listing = () => {
             {currentListing?.imageUrls.map((url) => (
               <SwiperSlide key={url}>
                 <div
-                  className="h-[500px]"
+                  className="h-[500px] relative"
                   style={{
                     background: `url(${url}) center no-repeat`,
                     backgroundSize: "cover",
                   }}
-                ></div>
+                >
+                  <FaRegShareFromSquare
+                    className="text-3xl text-blue-700 absolute top-5 right-5"
+                    onClick={handleCopy}
+                  />
+                </div>
               </SwiperSlide>
             ))}
           </Swiper>
