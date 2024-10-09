@@ -2,6 +2,7 @@ import { toast } from "react-toastify";
 import {
   addListing,
   deleteUserListing,
+  getListings,
   getSingleListing,
   updateUserListing,
 } from "../httpCommon";
@@ -104,6 +105,18 @@ export const getListing = async (id: string, dispatch: Dispatch) => {
       getListingFailure(
         error.response?.data?.message || "Error occure while get listing."
       )
+    );
+  }
+};
+
+export const fetchListing = async (searchQuery: string) => {
+  console.log("fetch started");
+  try {
+    const { data } = await getListings(searchQuery);
+    return data.data;
+  } catch (error: object | any) {
+    toast.error(
+      error.response?.data?.message || "Error occure while fetching listings."
     );
   }
 };

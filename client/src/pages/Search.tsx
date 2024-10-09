@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { fetchListing } from "../controllers/listingController";
 
 const Search = () => {
   const [searchData, setSearchData] = useState({
@@ -10,6 +12,32 @@ const Search = () => {
     sort: "newest",
     order: "desc",
   });
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchResults, setSearchResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const fetchListings = async (searchQuery: string) => {
+    setLoading(true);
+    const response = await fetchListing(searchQuery);
+    setLoading(false);
+    console.log("data", response);
+    setSearchResults(response);
+  };
+
+  useEffect(() => {
+    const params = Object.fromEntries(searchParams.entries());
+    setSearchData({
+      search: params.search || "",
+      type: params.type || "all",
+      parking: params.parking === "true" ? true : false,
+      furnished: params.furnished === "true" ? true : false,
+      offer: params.offer === "true" ? true : false,
+      sort: params.sort || "newest",
+      order: params.order || "desc",
+    });
+
+    fetchListings(searchParams.toString());
+  }, [searchParams]);
 
   // Handle input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,8 +89,15 @@ const Search = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("submit", searchData);
+    const urlParams = new URLSearchParams();
+    Object.entries(searchData).forEach(([key, value]) => {
+      urlParams.set(key, value.toString());
+    });
+    setSearchParams(urlParams);
   };
+
+  console.log("loading", loading);
+  console.log("search results", searchResults);
 
   return (
     <div className="flex flex-col md:flex-row">
@@ -80,6 +115,7 @@ const Search = () => {
                 type="text"
                 id="search"
                 name="search"
+                value={searchData.search}
                 onChange={handleChange}
                 placeholder="Search..."
                 className="border rounded-lg p-3 w-full"
@@ -96,7 +132,7 @@ const Search = () => {
                   onChange={handleChange}
                   checked={searchData.type === "all"}
                 />
-                <span>Rent & Sale</span>
+                <label htmlFor="all">Rent & Sale</label>
               </div>
               <div>
                 <input
@@ -107,7 +143,7 @@ const Search = () => {
                   onChange={handleChange}
                   checked={searchData.type === "rent"}
                 />
-                <span>Rent</span>
+                <label htmlFor="rent">Rent</label>
               </div>
               <div>
                 <input
@@ -118,7 +154,7 @@ const Search = () => {
                   onChange={handleChange}
                   checked={searchData.type === "sale"}
                 />
-                <span>Sale</span>
+                <label htmlFor="sale">Sale</label>
               </div>
               <div>
                 <input
@@ -128,7 +164,7 @@ const Search = () => {
                   onChange={handleChange}
                   className="w-5"
                 />
-                <span>Offer</span>
+                <label htmlFor="offer">Offer</label>
               </div>
             </div>
             <div className="flex gap-2 items-center flex-wrap">
@@ -144,7 +180,7 @@ const Search = () => {
                   onChange={handleChange}
                   checked={searchData.parking}
                 />
-                <span>Parking</span>
+                <label htmlFor="parking">Parking</label>
               </div>
               <div>
                 <input
@@ -155,7 +191,7 @@ const Search = () => {
                   onChange={handleChange}
                   checked={searchData.furnished}
                 />
-                <span>Furnished</span>
+                <label htmlFor="furnished">Furnished</label>
               </div>
             </div>
             <div className="flex gap-2 items-center flex-wrap">
@@ -188,6 +224,18 @@ const Search = () => {
             Listing results
           </h1>
         </div>
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          <ul>
+            <li>result</li>
+            {/* {searchResults.map((result, index) => (
+              <li key={index}>
+                <div>{result?.description || "none"}</div>
+              </li>
+            ))} */}
+          </ul>
+        )}
       </div>
     </div>
   );

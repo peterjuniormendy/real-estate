@@ -88,3 +88,6 @@ export const getUserInfo = (id: string) =>
     headers,
     withCredentials: true,
   });
+
+export const getListings = (searchQuery: string) =>
+  axios.get(`${url}/listing/get?${searchQuery}`, { headers });

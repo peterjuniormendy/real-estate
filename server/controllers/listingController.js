@@ -66,7 +66,7 @@ export const updateListing = async (req, res, next) => {
   }
 };
 
-export const getListing = async (req, res, next) => {
+export const getListingByID = async (req, res, next) => {
   try {
     const listing = await Listing.findById(req.params.id);
     if (!listing) {
@@ -84,7 +84,10 @@ export const getListing = async (req, res, next) => {
 
 export const getListings = async (req, res, next) => {
   try {
+    console.log("###################");
+    console.log("coming in");
     const limit = parseInt(req.query.limit) || 10;
+    console.log("limit", limit);
     const startIndex = parseInt(req.query.startIndex) || 0;
     let offer = req.query.offer;
 
@@ -123,6 +126,8 @@ export const getListings = async (req, res, next) => {
       .sort({ [sort]: order })
       .limit(limit)
       .skip(startIndex);
+
+    console.log("first lisitngs", listings);
 
     res.status(200).json({
       success: true,
