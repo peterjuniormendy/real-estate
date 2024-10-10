@@ -79,7 +79,7 @@ export const updateUserListing = (listing: Listing, id: string) =>
   });
 
 export const getSingleListing = (id: string) =>
-  axios.get(`${url}/listing/${id}`, {
+  axios.get(`${url}/listing/get/${id}`, {
     headers,
   });
 
