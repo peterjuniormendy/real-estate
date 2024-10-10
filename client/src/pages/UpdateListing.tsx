@@ -69,7 +69,7 @@ const UpdateListing = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, checked, type } = e.target;
     if (type === "checkbox") {
-      if (name === "rent" || name === "sell") {
+      if (name === "rent" || name === "sale") {
         setFormData((prev) => ({ ...prev, type: name }));
       } else {
         setFormData((prev) => ({ ...prev, [name]: checked }));
@@ -239,13 +239,13 @@ const UpdateListing = () => {
             <div className="flex gap-2 items-center">
               <input
                 type="checkbox"
-                name="sell"
-                id="sell"
-                checked={formData.type === "sell"}
+                name="sale"
+                id="sale"
+                checked={formData.type === "sale"}
                 onChange={handleInputChange}
               />
-              <label htmlFor="sell" className="cursor-pointer">
-                Sell
+              <label htmlFor="sale" className="cursor-pointer">
+                Sale
               </label>
             </div>
             <div className="flex gap-2 items-center">

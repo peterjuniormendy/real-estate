@@ -24,12 +24,12 @@ function App() {
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/about" element={<About />} />
         <Route element={<PrivateRoute />}>
-          <Route path="/search" element={<Search />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/create-listing" element={<CreateListing />} />
           <Route path="/update-listing/:id" element={<UpdateListing />} />
           <Route path="/my-listings" element={<UserListings />} />
         </Route>
+        <Route path="/search" element={<Search />} />
         <Route path="/listing/:id" element={<Listing />} />
       </Routes>
     </BrowserRouter>
