@@ -19,13 +19,6 @@ export const validateSession = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-  // if (req.cookies.access_token) {
-  //   // Verify the token here
-  //   // If valid, send { isValid: true }
-  //   // If invalid or expired, send { isValid: false }
-  // } else {
-  //   res.json({ isValid: false });
-  // }
 };
 
 export const signup = async (req, res, next) => {

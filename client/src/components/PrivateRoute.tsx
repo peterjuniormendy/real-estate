@@ -21,10 +21,6 @@ const PrivateRoute = () => {
 
   const isSessionValid = (): boolean => {
     const lastActivity = getLastActivityTimestamp();
-    console.log("lastActivity", lastActivity);
-    console.log("session_duration", SESSION_DURATION);
-    console.log("date of now", Date.now());
-    console.log("sub", Date.now() - lastActivity);
     return Date.now() - lastActivity <= SESSION_DURATION;
   };
 
@@ -33,17 +29,14 @@ const PrivateRoute = () => {
       try {
         const isValid = await validateSession();
         if (isValid) {
-          console.log("Session is valid");
           if (isSessionValid()) {
             updateLastActivityTimestamp();
             setIsAuthenticated(true);
           } else {
-            console.log("Session duration expired");
             await signout(dispatch);
             setIsAuthenticated(false);
           }
         } else {
-          console.log("Session is invalid");
           await signout(dispatch);
           setIsAuthenticated(false);
         }
