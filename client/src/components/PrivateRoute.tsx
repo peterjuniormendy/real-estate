@@ -1,8 +1,72 @@
-import { useAppSelector } from "../redux/hooks";
+import { useAppSelector, useAppDispatch } from "../redux/hooks";
 import { Outlet, Navigate } from "react-router-dom";
+import { signout, validateSession } from "../controllers/userController";
+import { useEffect, useState } from "react";
+
+const SESSION_DURATION = 60 * 60 * 24 * 1000; // 24 hours in milliseconds
 
 const PrivateRoute = () => {
   const { user } = useAppSelector((state) => state.user);
+  const dispatch = useAppDispatch();
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+
+  const getLastActivityTimestamp = (): number => {
+    const timestamp = localStorage.getItem("lastActivityTimestamp");
+    return timestamp ? parseInt(timestamp, 10) : Date.now();
+  };
+
+  const updateLastActivityTimestamp = () => {
+    localStorage.setItem("lastActivityTimestamp", Date.now().toString());
+  };
+
+  const isSessionValid = (): boolean => {
+    const lastActivity = getLastActivityTimestamp();
+    console.log("lastActivity", lastActivity);
+    console.log("session_duration", SESSION_DURATION);
+    console.log("date of now", Date.now());
+    console.log("sub", Date.now() - lastActivity);
+    return Date.now() - lastActivity <= SESSION_DURATION;
+  };
+
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      try {
+        const isValid = await validateSession();
+        if (isValid) {
+          console.log("Session is valid");
+          if (isSessionValid()) {
+            updateLastActivityTimestamp();
+            setIsAuthenticated(true);
+          } else {
+            console.log("Session duration expired");
+            await signout(dispatch);
+            setIsAuthenticated(false);
+          }
+        } else {
+          console.log("Session is invalid");
+          await signout(dispatch);
+          setIsAuthenticated(false);
+        }
+      } catch (error) {
+        console.error("Error validating session:", error);
+        await signout(dispatch);
+        setIsAuthenticated(false);
+      }
+    };
+
+    checkAuthentication();
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (user) {
+      updateLastActivityTimestamp();
+    }
+  }, [user]);
+
+  if (isAuthenticated === null) {
+    return <div>Loading...</div>; // Or a proper loading component
+  }
+
   return user ? <Outlet /> : <Navigate to="/login" />;
 };
 

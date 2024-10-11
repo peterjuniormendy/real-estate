@@ -3,6 +3,31 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { errorHandler } from "../utils/error.js";
 
+export const validateSession = async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.status(400).json({
+        success: false,
+        isValid: false,
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      isValid: true,
+    });
+  } catch (error) {
+    next(error);
+  }
+  // if (req.cookies.access_token) {
+  //   // Verify the token here
+  //   // If valid, send { isValid: true }
+  //   // If invalid or expired, send { isValid: false }
+  // } else {
+  //   res.json({ isValid: false });
+  // }
+};
+
 export const signup = async (req, res, next) => {
   const { username, email, password } = req.body;
 

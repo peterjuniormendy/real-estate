@@ -9,6 +9,7 @@ import {
   registerUser,
   signoutUser,
   userUpdate,
+  validateUserSession,
 } from "../httpCommon";
 import {
   getListingsFailure,
@@ -71,6 +72,16 @@ interface User {
   [key: string]: string | number; // if you want to allow additional properties
 }
 
+export const validateSession = async (): Promise<boolean> => {
+  try {
+    const response = await validateUserSession();
+    return response.data.isValid;
+  } catch (error) {
+    console.error("Error validating session:", error);
+    return false;
+  }
+};
+
 export const signinUser = async (formData: signInData, dispatch: Dispatch) => {
   try {
     dispatch(signInStart());
@@ -79,6 +90,7 @@ export const signinUser = async (formData: signInData, dispatch: Dispatch) => {
       toast.success(data?.message);
     }
     dispatch(signInSuccess(data.data));
+    localStorage.setItem("lastActivityTimestamp", Date.now().toString());
     return data;
   } catch (error: object | any) {
     toast.error(
@@ -118,6 +130,7 @@ export const signinWithGoogle = async (
     if (data.success) {
       toast.success(data.message);
     }
+    localStorage.setItem("lastActivityTimestamp", Date.now().toString());
     dispatch(signInSuccess(data.data));
   } catch (error: object | any) {
     console.error(error);
@@ -185,6 +198,7 @@ export const signout = async (dispatch: Dispatch) => {
     toast.success(data?.message);
     dispatch(signOutSuccess());
     dispatch(purgeStoredState());
+    localStorage.removeItem("lastActivityTimestamp");
   } catch (error: object | any) {
     console.error(error);
     toast.error(

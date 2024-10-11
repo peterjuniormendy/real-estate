@@ -16,6 +16,9 @@ interface Listing {
 }
 
 // Add withCredentials to ensure cookies are sent
+export const validateUserSession = () =>
+  axios.get(`${url}/auth/validate-session`, { withCredentials: true });
+
 export const loginUser = (user: object) =>
   axios.post(`${url}/auth/login`, user, {
     headers,
