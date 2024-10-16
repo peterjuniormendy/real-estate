@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import ListingCard from "../components/ListingCard";
 import { fetchListing } from "../controllers/listingController";
+import { Listing } from "../interfaces";
 
 const Search = () => {
   const [searchData, setSearchData] = useState({
@@ -13,7 +15,7 @@ const Search = () => {
     order: "desc",
   });
   const [searchParams, setSearchParams] = useSearchParams();
-  const [searchResults, setSearchResults] = useState([]);
+  const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const fetchListings = async (searchQuery: string) => {
@@ -21,7 +23,7 @@ const Search = () => {
     const response = await fetchListing(searchQuery);
     setLoading(false);
     console.log("data", response);
-    setSearchResults(response);
+    setListings(response);
   };
 
   useEffect(() => {
@@ -97,7 +99,7 @@ const Search = () => {
   };
 
   console.log("loading", loading);
-  console.log("search results", searchResults);
+  console.log("search results", listings);
 
   return (
     <div className="flex flex-col md:flex-row">
@@ -224,18 +226,21 @@ const Search = () => {
             Listing results
           </h1>
         </div>
-        {loading ? (
-          <p>Loading...</p>
-        ) : (
-          <ul>
-            <li>result</li>
-            {/* {searchResults.map((result, index) => (
-              <li key={index}>
-                <div>{result?.description || "none"}</div>
-              </li>
-            ))} */}
-          </ul>
-        )}
+        <div className="p-4 flex gap-3 flex-wrap">
+          {!loading && listings.length === 0 && (
+            <p className="text-xl text-slate-700 ">No listing found!</p>
+          )}
+          {loading && (
+            <p className="w-full text-center text-xl text-slate-700 ">
+              Loading...
+            </p>
+          )}
+          {!loading &&
+            listings?.length > 0 &&
+            listings.map((listing: Listing) => (
+              <ListingCard key={listing._id} listing={listing} />
+            ))}
+        </div>
       </div>
     </div>
   );

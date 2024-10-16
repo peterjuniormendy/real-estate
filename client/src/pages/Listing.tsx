@@ -62,7 +62,7 @@ const Listing = () => {
                   }}
                 >
                   <FaRegShareFromSquare
-                    className="text-3xl text-blue-700 absolute top-5 right-5"
+                    className="text-3xl text-black absolute top-5 right-5"
                     onClick={handleCopy}
                   />
                 </div>
@@ -72,10 +72,10 @@ const Listing = () => {
           <div className="max-w-6xl mx-auto p-4 pt-6 space-y-4">
             <div className="mt-10">
               <p className="text-2xl font-bold">
-                {currentListing.name} -{" "}
+                {currentListing.name} : $
                 {currentListing.offer
-                  ? currentListing.discountPrice.toLocaleString("en-UK")
-                  : currentListing.regularPrice.toLocaleString("en-UK")}
+                  ? currentListing.discountPrice?.toLocaleString("en-UK")
+                  : currentListing.regularPrice?.toLocaleString("en-UK")}
                 {currentListing.type === "rent" && " /month"}
               </p>
               <p className="flex item-center mt-6 gap-2 text-slate-600 my-2 text-sm">
@@ -90,7 +90,8 @@ const Listing = () => {
                   <p className="bg-green-900 w-full text-white max-w-[200px] text-center rounded-md p-1">
                     -$
                     {+currentListing.regularPrice -
-                      +currentListing.discountPrice}
+                      +currentListing.discountPrice}{" "}
+                    off
                   </p>
                 )}
               </div>

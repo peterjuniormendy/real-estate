@@ -94,7 +94,7 @@ export const getListing = async (id: string, dispatch: Dispatch) => {
     dispatch(getListingStart());
     const { data } = await getSingleListing(id);
     if (data.success) {
-      toast.success(data.message);
+      // toast.success(data.message);
       dispatch(getListingSuccess(data.data));
     }
   } catch (error: object | any) {
