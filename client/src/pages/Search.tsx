@@ -15,14 +15,15 @@ const Search = () => {
     order: "desc",
   });
   const [searchParams, setSearchParams] = useSearchParams();
-  const [listings, setListings] = useState([]);
+  const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(false);
+  const [showMore, setShowMore] = useState(false);
 
   const fetchListings = async (searchQuery: string) => {
     setLoading(true);
     const response = await fetchListing(searchQuery);
+    response?.length > 9 ? setShowMore(true) : setShowMore(false);
     setLoading(false);
-    console.log("data", response);
     setListings(response);
   };
 
@@ -98,8 +99,18 @@ const Search = () => {
     setSearchParams(urlParams);
   };
 
-  console.log("loading", loading);
-  console.log("search results", listings);
+  const handleShowMore = async () => {
+    const numberOfListings = listings.length;
+    const startIndex = numberOfListings;
+    const urlParams = new URLSearchParams(location.search);
+    urlParams.set("startIndex", startIndex.toString());
+    const searchQuery = urlParams.toString();
+    const response: Listing[] = await fetchListing(searchQuery.toString());
+    if (response.length < 10) {
+      setShowMore(false);
+    }
+    setListings([...listings, ...response]);
+  };
 
   return (
     <div className="flex flex-col md:flex-row">
@@ -240,6 +251,16 @@ const Search = () => {
             listings.map((listing: Listing) => (
               <ListingCard key={listing._id} listing={listing} />
             ))}
+        </div>
+        <div className="w-full flex justify-start">
+          {showMore && (
+            <button
+              onClick={handleShowMore}
+              className="text-green-700 hover:underline p-7"
+            >
+              Show more
+            </button>
+          )}
         </div>
       </div>
     </div>
