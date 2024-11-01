@@ -8,8 +8,10 @@ import userRouter from "../server/routes/userRoutes.js";
 import authRouter from "../server/routes/authRoutes.js";
 import listingRouter from "../server/routes/listingRoutes.js";
 import requestErrorMiddleware from "./middleware/requestErrorMiddleware.js";
-
+import path from "path";
 const app = express();
+
+const __dirname = path.resolve();
 
 // MIDDLEWARES
 app.use(express.json());
@@ -33,6 +35,12 @@ app.use("/api/listing", listingRouter);
 
 // Middleware for custom server error
 app.use(requestErrorMiddleware);
+
+app.use(express.static(path.join(__dirname, "/client/dist")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "/client/dist/index.html"));
+});
 
 const DB_URI = process.env.DB_URL;
 const PORT = process.env.PORT || 5000;
