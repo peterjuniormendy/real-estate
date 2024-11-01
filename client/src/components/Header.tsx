@@ -2,10 +2,19 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
 import { useAppSelector } from "../redux/hooks";
 import { useEffect, useState } from "react";
+import { CurrentUser } from "../interfaces";
+
+interface RootState {
+  user: {
+    user: CurrentUser | null;
+    loading: boolean;
+    error: string | null;
+  };
+}
 
 const Header = () => {
   const navigate = useNavigate();
-  const { user } = useAppSelector((state) => state.user);
+  const { user } = useAppSelector((state: RootState) => state.user);
   const [search, setSearch] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {

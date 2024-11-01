@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
+import { CurrentUser } from "../interfaces";
 import {
   getDownloadURL,
   getStorage,

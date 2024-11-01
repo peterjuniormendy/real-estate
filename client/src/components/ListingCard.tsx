@@ -1,8 +1,27 @@
-import { FaBath, FaBed, FaChair, FaParking } from "react-icons/fa";
+import { FaBath, FaBed } from "react-icons/fa";
 import { FaLocationPin } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
-const ListingCard = ({ listing }) => {
+interface Listing {
+  _id: string;
+  imageUrls: string[];
+  name: string;
+  address: string;
+  description: string;
+  type: "rent" | "sale";
+  offer: boolean;
+  discountPrice: number;
+  regularPrice: number;
+  bedrooms: number;
+  bathrooms: number;
+}
+
+// Define the props interface for the component
+interface ListingCardProps {
+  listing: Listing;
+}
+
+const ListingCard = ({ listing }: ListingCardProps) => {
   return (
     <div className="bg-white shadow-md hover:shadow-lg transition-shadow overflow-hidden rounded-lg w-full sm:w-[340px]">
       <Link to={`/listing/${listing._id}`}>

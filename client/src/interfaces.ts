@@ -6,6 +6,13 @@ export interface User {
   // Add any other user properties here
 }
 
+export interface CurrentUser {
+  _id: string;
+  email: string;
+  username: string;
+  avatar: string;
+}
+
 export interface ListingState {
   listings: Listing[];
   currentListing: object | null;
