@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const ListingCard = ({ listing }) => {
   return (
-    <div className="bg-white shadow-md hover:shadow-lg transition-shadow overflow-hidden rounded-lg w-full sm:w-[300px]">
+    <div className="bg-white shadow-md hover:shadow-lg transition-shadow overflow-hidden rounded-lg w-full sm:w-[340px]">
       <Link to={`/listing/${listing._id}`}>
         <img
           src={listing.imageUrls[0]}
