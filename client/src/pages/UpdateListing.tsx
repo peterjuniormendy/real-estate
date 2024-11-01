@@ -6,6 +6,7 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../firebase";
+// import { app } from "../firebase";
 import { useEffect, useState } from "react";
 import { FaTrash } from "react-icons/fa";
 import { getAuth } from "firebase/auth";
