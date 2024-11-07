@@ -33,6 +33,7 @@ interface Listing {
   offer: boolean;
   parking: boolean;
   furnished: boolean;
+  [key: string]: string | number | boolean | string[];
 }
 
 export const createListing = async (listing: Listing) => {

@@ -20,7 +20,7 @@ export const listingSlice = createSlice({
       state.loading = true;
       state.error = null;
     },
-    getListingsSuccess: (state, action: PayloadAction<any>) => {
+    getListingsSuccess: (state, action: PayloadAction<Listing[]>) => {
       state.listings = action.payload;
       state.loading = false;
       state.error = null;

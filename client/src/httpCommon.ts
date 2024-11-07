@@ -6,13 +6,14 @@ const headers: AxiosRequestConfig["headers"] = {
 };
 
 interface User {
-  username: string; // or number depending on your case
-  [key: string]: any; // if you want to allow additional properties
+  username: string;
+  id?: string;
+  _id?: string;
 }
 
 interface Listing {
   name: string;
-  [key: string]: any;
+  [key: string]: string | number | boolean | object;
 }
 
 // Add withCredentials to ensure cookies are sent

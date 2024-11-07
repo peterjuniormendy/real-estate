@@ -15,7 +15,6 @@ const Header = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(search);
 
     const urlParams = new URLSearchParams(window.location.search);
 

@@ -53,7 +53,6 @@ const CreateListing = () => {
       setLoading(true);
       setError("");
       const { data } = await createListing(formData);
-      console.log("Data", data);
       setLoading(false);
       if (data) {
         navigate(`/listing/${data._id}`);

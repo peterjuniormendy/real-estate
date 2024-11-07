@@ -21,7 +21,6 @@ const Home = () => {
     });
 
     const response = await fetchListing(searchParam.toString());
-    console.log(response);
     setOfferListings(response);
   };
   const fetchSalesListing = async (): Promise<void> => {
