@@ -6,6 +6,7 @@ import { signupUser } from "../controllers/userController";
 import { useAppSelector } from "../redux/hooks";
 
 interface FormData {
+  [key: string]: string;
   username: string;
   email: string;
   password: string;
@@ -40,7 +41,7 @@ const SignUp = () => {
       return toast.error("Password is required");
     }
     try {
-      const res = await signupUser(formData);
+      const res = await signupUser(formData as FormData);
       if (res) {
         navigate("/login");
         setFormData({

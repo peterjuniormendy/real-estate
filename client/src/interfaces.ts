@@ -64,3 +64,11 @@ export interface FormData {
   avatar: string;
   password: string;
 }
+
+export interface ApiError {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+}

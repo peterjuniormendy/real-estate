@@ -12,12 +12,15 @@ import { getAuth } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../redux/hooks";
 import { createListing } from "../controllers/listingController";
+import { User } from "../interfaces";
 
 const CreateListing = () => {
   const navigate = useNavigate();
   const auth = getAuth();
   const firebaseUser = auth.currentUser;
-  const { user } = useAppSelector((state) => state.user);
+  const { user } = useAppSelector((state) => state.user) as {
+    user: User | null;
+  };
   const [files, setFiles] = useState<FileList | null>(null);
   const [formData, setFormData] = useState({
     imageUrls: [] as string[],
@@ -32,7 +35,7 @@ const CreateListing = () => {
     offer: false,
     parking: false,
     furnished: false,
-    userRef: user._id,
+    userRef: user?._id || "",
   });
   const [uploadError, setUploadError] = useState<string>("");
   const [isUploading, setIsUpLoading] = useState<boolean>(false);
@@ -57,7 +60,7 @@ const CreateListing = () => {
       } else {
         setError(data?.message);
       }
-    } catch (error) {
+    } catch {
       setLoading(false);
       setError("Failed to create listing");
     }

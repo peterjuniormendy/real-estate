@@ -1,22 +1,27 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { deleteListing } from "../controllers/listingController";
 import { getAllUserListing } from "../controllers/userController";
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
+import { RootState } from "../redux/store";
+import { User } from "../interfaces";
 
 const UserListings: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { user } = useAppSelector((state) => state.user);
-  const { listings } = useAppSelector((state) => state.listings);
+  const { user } = useAppSelector((state: RootState) => state.user) as {
+    user: User | null;
+  };
+  const { listings } = useAppSelector((state: RootState) => state.listings);
 
-  const fetchListing = async () => {
+  const fetchListing = useCallback(async () => {
     try {
-      await getAllUserListing(user, dispatch);
+      if (!user?._id) return;
+      await getAllUserListing(user as User, dispatch);
     } catch (error) {
       console.error("Error fetching listings:", error);
     }
-  };
+  }, [user, dispatch]);
 
   const handleDelete = async (id: string) => {
     try {
@@ -29,7 +34,7 @@ const UserListings: React.FC = () => {
 
   useEffect(() => {
     fetchListing();
-  }, []);
+  }, [fetchListing]);
 
   return (
     <main className="p-4 max-w-6xl mx-auto">

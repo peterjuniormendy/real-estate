@@ -1,6 +1,6 @@
 import { toast } from "react-toastify";
 import { purgeStoredState } from "../redux/store";
-import { User } from "../interfaces";
+import { User, ApiError } from "../interfaces";
 import { AppDispatch } from "../redux/store";
 import {
   deleteUserAccount,
@@ -58,14 +58,6 @@ interface updateData {
   password: string;
   username: string;
   avatar: string;
-}
-
-interface ApiError {
-  response?: {
-    data?: {
-      message?: string;
-    };
-  };
 }
 
 export const validateSession = async (): Promise<boolean> => {

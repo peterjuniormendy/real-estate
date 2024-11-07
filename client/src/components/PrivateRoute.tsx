@@ -1,7 +1,7 @@
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
 import { Outlet, Navigate } from "react-router-dom";
 import { signout, validateSession } from "../controllers/userController";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const SESSION_DURATION = 60 * 60 * 24 * 1000; // 24 hours in milliseconds
 
@@ -19,10 +19,10 @@ const PrivateRoute = () => {
     localStorage.setItem("lastActivityTimestamp", Date.now().toString());
   };
 
-  const isSessionValid = (): boolean => {
+  const isSessionValid = useCallback((): boolean => {
     const lastActivity = getLastActivityTimestamp();
     return Date.now() - lastActivity <= SESSION_DURATION;
-  };
+  }, []);
 
   useEffect(() => {
     const checkAuthentication = async () => {
@@ -48,7 +48,7 @@ const PrivateRoute = () => {
     };
 
     checkAuthentication();
-  }, [dispatch]);
+  }, [dispatch, isSessionValid]);
 
   useEffect(() => {
     if (user) {

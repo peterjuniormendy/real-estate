@@ -21,9 +21,6 @@ const Listing = () => {
   SwiperCore.use([Navigation]);
   const dispatch = useAppDispatch();
   const { id } = useParams();
-  const { user } = useAppSelector((state) => state.user) as {
-    user: { _id: string } | null;
-  };
   const { currentListing, loading, error } = useAppSelector(
     (state) => state.listings
   ) as {
@@ -130,16 +127,14 @@ const Listing = () => {
               </li>
             </ul>
             {/* Condition to be change later. Button should only show for the non poster on the property. */}
-            {user &&
-              user._id !== currentListing.userRef &&
-              !showContactForm && (
-                <button
-                  onClick={() => setShowContactForm(true)}
-                  className="w-full py-2 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95"
-                >
-                  Contact landlord
-                </button>
-              )}
+            {currentListing.userRef && !showContactForm && (
+              <button
+                onClick={() => setShowContactForm(true)}
+                className="w-full py-2 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95"
+              >
+                Contact landlord
+              </button>
+            )}
             {showContactForm && <Contact listing={currentListing} />}
           </div>
         </>

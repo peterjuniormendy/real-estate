@@ -1,17 +1,29 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getUser } from "../controllers/userController";
 
-const Contact = ({ listing }) => {
-  const [landlordData, setLoadlordData] = useState(null);
+interface ContactProps {
+  listing: {
+    userRef: string;
+    name?: string;
+  };
+}
+
+interface LandlordData {
+  username: string;
+  email: string;
+}
+
+const Contact = ({ listing }: ContactProps) => {
+  const [landlordData, setLoadlordData] = useState<LandlordData | null>(null);
   const [message, setMessage] = useState("");
-  const fetchUserDetails = async () => {
+  const fetchUserDetails = useCallback(async () => {
     const { data } = await getUser(listing.userRef);
     setLoadlordData(data);
-  };
+  }, [listing.userRef]);
   useEffect(() => {
     fetchUserDetails();
-  }, [listing.userRef]);
+  }, [fetchUserDetails]);
   return (
     <>
       {landlordData && (

@@ -6,13 +6,13 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../firebase";
-// import { app } from "../firebase";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FaTrash } from "react-icons/fa";
 import { getAuth } from "firebase/auth";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { getListing, updateListing } from "../controllers/listingController";
+import { Listing, User } from "../interfaces";
 
 const UpdateListing = () => {
   const { id } = useParams();
@@ -20,8 +20,12 @@ const UpdateListing = () => {
   const dispatch = useAppDispatch();
   const auth = getAuth();
   const firebaseUser = auth.currentUser;
-  const { user } = useAppSelector((state) => state.user);
-  const { currentListing } = useAppSelector((state) => state.listings);
+  const { user } = useAppSelector((state) => state.user) as {
+    user: User | null;
+  };
+  const { currentListing } = useAppSelector((state) => state.listings) as {
+    currentListing: Listing | null;
+  };
   const [files, setFiles] = useState<FileList | null>(null);
   const [formData, setFormData] = useState({
     imageUrls: [] as string[],
@@ -36,7 +40,7 @@ const UpdateListing = () => {
     offer: false,
     parking: false,
     furnished: false,
-    userRef: user._id,
+    userRef: user?._id || "",
   });
   const [uploadError, setUploadError] = useState<string>("");
   const [isUploading, setIsUpLoading] = useState<boolean>(false);
@@ -53,15 +57,15 @@ const UpdateListing = () => {
 
       setLoading(true);
       setError("");
+      if (!id) return setError("Listing ID not found");
       const data = await updateListing(formData, id, dispatch);
-      console.log("Data", data);
       setLoading(false);
       if (data?.success) {
         navigate(`/listing/${data?.data._id}`);
       } else {
         setError("");
       }
-    } catch (error) {
+    } catch {
       setLoading(false);
       setError("Failed to update listing");
     }
@@ -172,26 +176,26 @@ const UpdateListing = () => {
     }
   };
 
-  const fetchListing = async () => {
+  const fetchListing = useCallback(async () => {
     try {
+      if (!id) return;
       await getListing(id, dispatch);
     } catch (error) {
       console.error(error);
     }
-  };
-
-  console.log("current lisiting", currentListing);
+  }, [id, dispatch]);
 
   useEffect(() => {
     fetchListing();
-  }, []);
+  }, [fetchListing]);
 
   useEffect(() => {
     if (currentListing) {
-      setFormData({
+      setFormData((prev) => ({
+        ...prev,
         ...currentListing,
         imageUrls: [...currentListing.imageUrls],
-      });
+      }));
     }
   }, [currentListing]);
 
