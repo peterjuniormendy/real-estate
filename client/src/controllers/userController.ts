@@ -1,5 +1,7 @@
 import { toast } from "react-toastify";
 import { purgeStoredState } from "../redux/store";
+import { User } from "../interfaces";
+import { AppDispatch } from "../redux/store";
 import {
   deleteUserAccount,
   getAllUserListings,
@@ -41,7 +43,7 @@ interface signUpData {
   email: string;
   password: string;
   username: string;
-  [key: string]: string | any;
+  [key: string]: string | undefined;
 }
 
 interface GoogleData {
@@ -58,18 +60,12 @@ interface updateData {
   avatar: string;
 }
 
-interface Dispatch {
-  (action: any): void;
-}
-
-interface User {
-  id: string; // or number depending on your case
-  email: string;
-  username: string;
-  avatar: string;
-  password: string;
-
-  [key: string]: string | number; // if you want to allow additional properties
+interface ApiError {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
 }
 
 export const validateSession = async (): Promise<boolean> => {
@@ -82,7 +78,10 @@ export const validateSession = async (): Promise<boolean> => {
   }
 };
 
-export const signinUser = async (formData: signInData, dispatch: Dispatch) => {
+export const signinUser = async (
+  formData: signInData,
+  dispatch: AppDispatch
+) => {
   try {
     dispatch(signInStart());
     const { data } = await loginUser(formData);
@@ -92,17 +91,19 @@ export const signinUser = async (formData: signInData, dispatch: Dispatch) => {
     dispatch(signInSuccess(data.data));
     localStorage.setItem("lastActivityTimestamp", Date.now().toString());
     return data;
-  } catch (error: object | any) {
+  } catch (error: unknown) {
     toast.error(
-      error?.response?.data?.message || "Error occure while user signin."
+      (error as ApiError)?.response?.data?.message ||
+        "Error occurred while user signin."
     );
 
     dispatch(
       signInFailure(
-        error?.response?.data?.message || "Error occured while signing in"
+        (error as ApiError)?.response?.data?.message ||
+          "Error occured while signing in"
       )
     );
-    return error.response?.data;
+    return (error as ApiError)?.response?.data;
   }
 };
 
@@ -113,17 +114,18 @@ export const signupUser = async (formData: signUpData) => {
       toast.success(data);
     }
     return data;
-  } catch (error: object | any) {
+  } catch (error: unknown) {
     console.error(error);
     toast.error(
-      error?.response?.data?.message || "Error occure while user signup."
+      (error as ApiError)?.response?.data?.message ||
+        "Error occure while user signup."
     );
   }
 };
 
 export const signinWithGoogle = async (
   formData: GoogleData,
-  dispatch: Dispatch
+  dispatch: AppDispatch
 ) => {
   try {
     const { data } = await googleSignin(formData);
@@ -132,15 +134,19 @@ export const signinWithGoogle = async (
     }
     localStorage.setItem("lastActivityTimestamp", Date.now().toString());
     dispatch(signInSuccess(data.data));
-  } catch (error: object | any) {
+  } catch (error: unknown) {
     console.error(error);
     toast.error(
-      error?.response?.data?.message || "Error occure while user signin."
+      (error as ApiError)?.response?.data?.message ||
+        "Error occure while user signin."
     );
   }
 };
 
-export const updateUser = async (formData: updateData, dispatch: Dispatch) => {
+export const updateUser = async (
+  formData: updateData,
+  dispatch: AppDispatch
+) => {
   try {
     dispatch(updateUserStart());
     const { data } = await userUpdate(formData);
@@ -151,21 +157,23 @@ export const updateUser = async (formData: updateData, dispatch: Dispatch) => {
     }
     toast.success(data?.message);
     dispatch(updateUserSuccess(data?.data));
-  } catch (error: object | any) {
+  } catch (error: unknown) {
     console.error(error);
     toast.error(
-      error?.response?.data?.message || "Error occured while signing in"
+      (error as ApiError)?.response?.data?.message ||
+        "Error occured while signing in"
     );
 
     dispatch(
       updateUserFailure(
-        error?.response?.data?.message || "Error occured while signing in"
+        (error as ApiError)?.response?.data?.message ||
+          "Error occured while signing in"
       )
     );
   }
 };
 
-export const deleteUser = async (user: User, dispatch: Dispatch) => {
+export const deleteUser = async (user: User, dispatch: AppDispatch) => {
   try {
     dispatch(deleteUserStart());
     const { data } = await deleteUserAccount(user);
@@ -177,16 +185,16 @@ export const deleteUser = async (user: User, dispatch: Dispatch) => {
     toast.success(data?.message);
     dispatch(deleteUserSuccess());
     dispatch(purgeStoredState());
-  } catch (error: object | any) {
+  } catch (error: unknown) {
     console.error(error);
     toast.error(
-      error?.response?.data?.message ||
+      (error as ApiError)?.response?.data?.message ||
         "Error occure while deleting user account."
     );
   }
 };
 
-export const signout = async (dispatch: Dispatch) => {
+export const signout = async (dispatch: AppDispatch) => {
   try {
     dispatch(signOutStart());
     const { data } = await signoutUser();
@@ -199,15 +207,16 @@ export const signout = async (dispatch: Dispatch) => {
     dispatch(signOutSuccess());
     dispatch(purgeStoredState());
     localStorage.removeItem("lastActivityTimestamp");
-  } catch (error: object | any) {
+  } catch (error: unknown) {
     console.error(error);
     toast.error(
-      error?.response?.data?.message || "Error occure while signing out user."
+      (error as ApiError)?.response?.data?.message ||
+        "Error occure while signing out user."
     );
   }
 };
 
-export const getAllUserListing = async (user: User, dispatch: Dispatch) => {
+export const getAllUserListing = async (user: User, dispatch: AppDispatch) => {
   try {
     dispatch(getListingsStart());
     const { data } = await getAllUserListings(user);
@@ -217,13 +226,12 @@ export const getAllUserListing = async (user: User, dispatch: Dispatch) => {
     }
     dispatch(getListingsFailure(data?.message));
     toast.error(data?.message);
-  } catch (error: object | any) {
+  } catch (error: unknown) {
     console.error(error);
     toast.error(
-      error?.response?.data?.message ||
+      (error as ApiError)?.response?.data?.message ||
         "Error occure while getting user listings."
     );
-    dispatch(getListingsFailure(error.response?.data?.message));
   }
 };
 
@@ -232,7 +240,7 @@ export const getUser = async (id: string) => {
     const { data } = await getUserInfo(id);
     console.log("data", data);
     return data;
-  } catch (error: object | any) {
+  } catch (error: unknown) {
     console.log("error occured: ", error);
   }
 };

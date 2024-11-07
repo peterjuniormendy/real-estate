@@ -52,6 +52,7 @@ const SignUp = () => {
       setIsLoading(false);
     } catch (error) {
       toast.error("An error occurred during sign-up.");
+      console.log("error", error);
     } finally {
       setIsLoading(false);
     }

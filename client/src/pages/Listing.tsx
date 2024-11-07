@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getListing } from "../controllers/listingController";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
@@ -15,32 +15,43 @@ import {
 } from "react-icons/fa";
 import { FaRegShareFromSquare } from "react-icons/fa6";
 import Contact from "../components/Contact";
+import { Listing as ListingType } from "../interfaces";
 
 const Listing = () => {
   SwiperCore.use([Navigation]);
   const dispatch = useAppDispatch();
   const { id } = useParams();
-  const { user } = useAppSelector((state) => state.user);
+  const { user } = useAppSelector((state) => state.user) as {
+    user: { _id: string } | null;
+  };
   const { currentListing, loading, error } = useAppSelector(
     (state) => state.listings
-  );
+  ) as {
+    currentListing: ListingType | null;
+    loading: boolean;
+    error: string | null;
+  };
+
   const [showContactForm, setShowContactForm] = useState(false);
 
-  const fetchListing = async () => {
+  const fetchListing = useCallback(async () => {
     try {
-      await getListing(id, dispatch);
+      if (id) {
+        await getListing(id, dispatch);
+      }
     } catch (error) {
       console.log(error);
     }
-  };
+  }, [id, dispatch]);
+
+  useEffect(() => {
+    fetchListing();
+  }, [fetchListing]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(window.location.href);
   };
 
-  useEffect(() => {
-    fetchListing();
-  }, [id]);
   return (
     <main>
       {loading && <p className="text-center my-7 text-2xl">Loading...</p>}
@@ -52,7 +63,7 @@ const Listing = () => {
       {currentListing && !loading && !error && (
         <>
           <Swiper navigation>
-            {currentListing?.imageUrls.map((url) => (
+            {currentListing.imageUrls.map((url) => (
               <SwiperSlide key={url}>
                 <div
                   className="h-[500px] relative"
@@ -107,7 +118,7 @@ const Listing = () => {
               </li>
               <li className="flex items-center gap-2 whitespace-nowrap ">
                 <FaBath className=" text-lg" />
-                {currentListing.bathrooms > 1 ? "bathrooms" : "Bedroom"}
+                {currentListing.bathrooms > 1 ? "bathrooms" : "Bathroom"}
               </li>
               <li className="flex items-center gap-2 whitespace-nowrap ">
                 <FaParking className=" text-lg" />

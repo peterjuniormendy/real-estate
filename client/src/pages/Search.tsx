@@ -19,12 +19,26 @@ const Search = () => {
   const [loading, setLoading] = useState(false);
   const [showMore, setShowMore] = useState(false);
 
-  const fetchListings = async (searchQuery: string) => {
+  // const fetchListings = async (searchQuery: string) => {
+  //   setLoading(true);
+  //   const response = await fetchListing(searchQuery);
+  //   response?.length > 9 ? setShowMore(true) : setShowMore(false);
+  //   setLoading(false);
+  //   setListings(response);
+  // };
+  const fetchListings = async (searchQuery: string): Promise<void> => {
     setLoading(true);
-    const response = await fetchListing(searchQuery);
-    response?.length > 9 ? setShowMore(true) : setShowMore(false);
-    setLoading(false);
-    setListings(response);
+    try {
+      const response = await fetchListing(searchQuery);
+      if (response) {
+        setShowMore(response.length > 9);
+        setListings(response);
+      }
+    } catch (error) {
+      console.error("Error fetching listings:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {

@@ -1,8 +1,10 @@
 export interface User {
+  _id: string;
   id: string;
   username: string;
   email: string;
-  avatar?: string;
+  avatar: string;
+  password?: string;
   // Add any other user properties here
 }
 
@@ -25,11 +27,19 @@ export interface Listing {
   name: string;
   description: string;
   price: number;
-  location: string;
+  address: string;
   imageUrls: string[];
+  bedrooms: number;
+  parking: boolean;
+  furnished: boolean;
+  bathrooms: number;
+  regularPrice: number;
+  discountPrice: number;
+  offer: boolean;
+  type: "rent" | "sale";
   createdAt: Date;
   updatedAt: Date;
-  userId: string; // Reference to the user who created the listing
+  userRef: string; // Reference to the user who created the listing
   // Add any other listing properties here
 }
 
@@ -45,4 +55,12 @@ export interface RootState {
     // loading: boolean;
     // error: string | null;
   };
+}
+
+export interface FormData {
+  id: string;
+  username: string;
+  email: string;
+  avatar: string;
+  password: string;
 }

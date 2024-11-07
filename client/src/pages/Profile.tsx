@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
-import { CurrentUser } from "../interfaces";
 import {
   getDownloadURL,
   getStorage,
@@ -10,33 +9,38 @@ import {
 } from "firebase/storage";
 import { app } from "../firebase";
 import { deleteUser, signout, updateUser } from "../controllers/userController";
+import { FormData, User } from "../interfaces";
 
 const Profile = () => {
   const dispatch = useAppDispatch();
-  const profileRef = useRef(null);
-  const { user, loading } = useAppSelector((state) => state.user);
+  const profileRef = useRef<HTMLInputElement>(null);
+  const { user, loading } = useAppSelector((state) => state.user) as {
+    user: User | null;
+    loading: boolean;
+  };
   const [file, setFile] = useState<File | undefined>(undefined);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
-  const [uploadError, setUploadError] = useState<any>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
-  const [formData, setFormData] = useState({
-    id: "",
-    username: "",
-    email: "",
-    avatar: "",
+  const [formData, setFormData] = useState<FormData>({
+    id: user?._id || "",
+    username: user?.username || "",
+    email: user?.email || "",
+    avatar: user?.avatar || "",
     password: "",
   });
 
   useEffect(() => {
-    setFormData((prev) => ({
-      ...prev,
-      id: user?._id,
-      email: user?.email,
-      username: user?.username,
-      avatar: user?.avatar,
-    }));
+    if (user) {
+      setFormData({
+        id: user._id,
+        email: user.email,
+        username: user.username,
+        avatar: user.avatar || "",
+        password: "",
+      });
+    }
   }, [user]);
-
   useEffect(() => {
     if (file) {
       handleFileUpload(file);
@@ -57,7 +61,9 @@ const Profile = () => {
         setUploadProgress(Math.round(progress));
       },
       (error) => {
-        setUploadError(error || "error occure while uploading image");
+        setUploadError(
+          (error as Error)?.message || "Error occurred while uploading image"
+        );
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
@@ -84,6 +90,7 @@ const Profile = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     try {
       await updateUser(formData, dispatch);
     } catch (error) {
@@ -92,7 +99,16 @@ const Profile = () => {
   };
 
   const handleDeleteUser = async () => {
-    await deleteUser(user, dispatch);
+    if (!user || !user.password) return;
+
+    const userWithPassword = {
+      ...user,
+      password: user.password,
+      id: user._id,
+    };
+
+    await deleteUser(userWithPassword, dispatch);
+    if (!user || !user.password) return;
   };
 
   const handleUserSignout = async () => {
@@ -116,7 +132,7 @@ const Profile = () => {
           name="avatar"
         />
         <img
-          onClick={() => profileRef.current.click()}
+          onClick={() => profileRef.current?.click()}
           src={formData.avatar || user?.avatar}
           alt="profile"
           className="rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2"

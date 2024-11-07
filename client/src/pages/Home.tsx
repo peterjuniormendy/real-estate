@@ -6,14 +6,15 @@ import { Navigation } from "swiper/modules";
 import "swiper/css/bundle";
 import { fetchListing } from "../controllers/listingController";
 import ListingCard from "../components/ListingCard";
+import { Listing } from "../interfaces";
 
 const Home = () => {
   SwiperCore.use([Navigation]);
-  const [offerListings, setOfferListings] = useState([]);
-  const [salesListings, setSalesListings] = useState([]);
-  const [rentListings, setRentListings] = useState([]);
+  const [offerListings, setOfferListings] = useState<Listing[]>([]);
+  const [salesListings, setSalesListings] = useState<Listing[]>([]);
+  const [rentListings, setRentListings] = useState<Listing[]>([]);
 
-  const fetchOfferListings = async () => {
+  const fetchOfferListings = async (): Promise<void> => {
     const searchParam = new URLSearchParams({
       offer: true.toString(),
       limit: "3",
@@ -23,7 +24,7 @@ const Home = () => {
     console.log(response);
     setOfferListings(response);
   };
-  const fetchSalesListing = async () => {
+  const fetchSalesListing = async (): Promise<void> => {
     const searchParam = new URLSearchParams({
       type: "sale",
       limit: "3",
@@ -32,7 +33,7 @@ const Home = () => {
     const response = await fetchListing(searchParam.toString());
     setSalesListings(response);
   };
-  const fetchRentListings = async () => {
+  const fetchRentListings = async (): Promise<void> => {
     const searchParam = new URLSearchParams({
       type: "rent",
       limit: "3",
@@ -121,7 +122,7 @@ const Home = () => {
                 </Link>
               </div>
               <div className="flex flex-wrap gap-4">
-                {rentListings.map((listing) => (
+                {rentListings.map((listing: Listing) => (
                   <ListingCard listing={listing} key={listing._id} />
                 ))}
               </div>
