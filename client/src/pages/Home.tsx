@@ -74,7 +74,7 @@ const Home = () => {
               <SwiperSlide key={index}>
                 <div
                   style={{
-                    background: `url(${listing.imageUrls[0]}) center no-repeat`,
+                    background: `url("${listing.imageUrls[0]}") center no-repeat`,
                     backgroundSize: "cover",
                     height: "500px",
                   }}
