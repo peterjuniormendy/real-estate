@@ -84,10 +84,7 @@ export const getListingByID = async (req, res, next) => {
 
 export const getListings = async (req, res, next) => {
   try {
-    console.log("###################");
-    console.log("coming in");
     const limit = parseInt(req.query.limit) || 10;
-    console.log("limit", limit);
     const startIndex = parseInt(req.query.startIndex) || 0;
     let offer = req.query.offer;
 
