@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from "axios";
-const url: string = "http://localhost:5000/api";
+const url: string = "/api";
 
 const headers: AxiosRequestConfig["headers"] = {
   "Content-Type": "application/json",

@@ -18,10 +18,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(
   cors({
-    origin:
-      process.env.NODE_ENV === "production"
-        ? process.env.CLIENT_URL // Add this to your .env file
-        : "http://localhost:5173",
+    origin: true, // This allows requests from the same origin
     credentials: true,
   })
 );

@@ -124,8 +124,6 @@ export const getListings = async (req, res, next) => {
       .limit(limit)
       .skip(startIndex);
 
-    console.log("first lisitngs", listings);
-
     res.status(200).json({
       success: true,
       message: "retrived listings successfully",
