@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const About = () => {
   return (
     <div className="py-20 px-4 max-w-6xl mx-auto ">
@@ -22,6 +24,12 @@ const About = () => {
         preferences, and we work tirelessly to find the perfect property for
         them.
       </p>
+      <Link
+        to="/search"
+        className="text-xs sm:text-sm text-blue-800 font-bold hover:underline"
+      >
+        Get stated
+      </Link>
     </div>
   );
 };
