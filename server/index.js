@@ -18,8 +18,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(
   cors({
-    origin: "http://localhost:5173", // Replace with your client-side URL
-    credentials: true, // This allows cookies to be sent with cross-origin requests
+    origin:
+      process.env.NODE_ENV === "production"
+        ? process.env.CLIENT_URL // Add this to your .env file
+        : "http://localhost:5173",
+    credentials: true,
   })
 );
 app.use(cookieParser());
